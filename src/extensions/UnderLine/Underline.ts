@@ -4,7 +4,7 @@ import ActionButton from '@/components/ActionButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface UnderlineOptions extends TiptapUnderlineOptions, GeneralOptions<UnderlineOptions> { }
+export interface UnderlineOptions extends TiptapUnderlineOptions, GeneralOptions<UnderlineOptions> {}
 
 export const Underline = TiptapUnderline.extend<UnderlineOptions>({
   addOptions() {

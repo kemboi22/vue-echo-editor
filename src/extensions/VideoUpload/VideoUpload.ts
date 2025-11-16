@@ -37,8 +37,8 @@ export const VideoUpload = Node.create<VideoOptions>({
     return {
       setVideoUpload:
         () =>
-          ({ commands }) =>
-            commands.insertContent(`<div data-type="${this.name}"></div>`),
+        ({ commands }) =>
+          commands.insertContent(`<div data-type="${this.name}"></div>`),
     }
   },
   addNodeView() {

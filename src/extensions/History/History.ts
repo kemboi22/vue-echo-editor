@@ -5,7 +5,7 @@ import ActionButton from '@/components/ActionButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface HistoryOptions extends TiptapHistoryOptions, GeneralOptions<HistoryOptions> { }
+export interface HistoryOptions extends TiptapHistoryOptions, GeneralOptions<HistoryOptions> {}
 
 export const History = TiptapHistory.extend<HistoryOptions>({
   addOptions() {

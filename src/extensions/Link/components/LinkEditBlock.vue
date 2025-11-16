@@ -49,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="target" class="p-2 rounded-lg bg-card shadow-sm border">
+  <div ref="target" class="p-2 rounded-lg bg-card shadow-xs border">
     <form @submit.prevent="handleSubmit" class="flex flex-col gap-2">
       <Label> {{ t('editor.link.dialog.text') }} </Label>
       <div class="flex w-full max-w-sm items-center gap-1.5">

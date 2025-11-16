@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core'
 import type { GeneralOptions } from '@/type'
 import ActionButton from '@/components/ActionButton.vue'
 import { useTiptapStore } from '@/hooks'
-export interface FullscreenOptions extends GeneralOptions<FullscreenOptions> { }
+export interface FullscreenOptions extends GeneralOptions<FullscreenOptions> {}
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -30,12 +30,10 @@ export const Fullscreen = Extension.create<FullscreenOptions>({
   },
   addCommands() {
     return {
-      setFullscreen:
-        () =>
-          () => {
-            toggleFullscreen()
-            return true
-          }
+      setFullscreen: () => () => {
+        toggleFullscreen()
+        return true
+      },
     }
   },
   addKeyboardShortcuts() {

@@ -188,7 +188,7 @@ watch(
         variant="ghost"
         @click="handleAdd"
         size="icon"
-        class="w-7 h-7 cursor-grab rounded-sm"
+        class="w-7 h-7 cursor-grab rounded-xs"
         :disabled="disabled"
       >
         <Icon name="Plus" class="text-lg" />
@@ -198,7 +198,7 @@ watch(
           <TooltipProvider :delay-duration="0">
             <Tooltip>
               <TooltipTrigger as-child>
-                <Button variant="ghost" size="icon" class="w-6 h-7 cursor-grab rounded-sm" :disabled="disabled">
+                <Button variant="ghost" size="icon" class="w-6 h-7 cursor-grab rounded-xs" :disabled="disabled">
                   <Icon name="Grip" class="text-sm" />
                 </Button>
               </TooltipTrigger>

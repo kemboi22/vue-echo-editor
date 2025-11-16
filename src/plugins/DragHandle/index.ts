@@ -10,7 +10,6 @@ import type { Props as TippyProps } from 'tippy.js'
 import { Transaction, EditorState } from '@tiptap/pm/state'
 import type { EditorView } from '@tiptap/pm/view'
 
-
 function getSelectionRangesNearCursor(event, editor) {
   const { doc: editorDocument } = editor.view.state,
     nearestElement = findElementNextToCoords({ editor: editor, x: event.clientX, y: event.clientY, direction: 'right' })
@@ -23,9 +22,12 @@ function getSelectionRangesNearCursor(event, editor) {
         editorBorderRight = parseInt(getComputedStyles(editor.dom, 'borderLeftWidth'), 10),
         editorRect = editor.dom.getBoundingClientRect()
       return {
-        left: minMax(mouseX, editorRect.left + editorPaddingLeft + editorBorderLeft,
-          editorRect.right - editorPaddingRight - editorBorderRight),
-        top: mouseY
+        left: minMax(
+          mouseX,
+          editorRect.left + editorPaddingLeft + editorBorderLeft,
+          editorRect.right - editorPaddingRight - editorBorderRight
+        ),
+        top: mouseY,
       }
     })(editor.view, mouseXPosition, event.clientY),
     positionAtCoords = editor.view.posAtCoords(cursorPosition)
@@ -47,7 +49,7 @@ const getAncestorNodeAtDepth = (document, position) => {
     resolvedPosition = document.resolve(position)
   let { depth: currentDepth } = resolvedPosition,
     ancestorNode = currentNode
-  for (; currentDepth > 0;) {
+  for (; currentDepth > 0; ) {
     const parentNode = resolvedPosition.node(currentDepth)
     currentDepth -= 1
     if (0 === currentDepth) {
@@ -62,7 +64,7 @@ const getOuterNode = (doc, pos) => {
 }
 const getOuterNodePos = (e, t) => {
   let n = t
-  for (; n && n.parentNode && n.parentNode !== e.dom;) n = n.parentNode
+  for (; n && n.parentNode && n.parentNode !== e.dom; ) n = n.parentNode
   return n
 }
 
@@ -95,7 +97,8 @@ const DragHandlePlugin = ({
     const nearCursorRanges = getSelectionRangesNearCursor(event, editor)
     const currentSelectionRanges = getSelectionRanges(selectionStart, selectionEnd, 0)
     const hasOverlappingRanges = currentSelectionRanges.some(range =>
-      nearCursorRanges.find(nearRange => nearRange.$from === range.$from && nearRange.$to === range.$to))
+      nearCursorRanges.find(nearRange => nearRange.$from === range.$from && nearRange.$to === range.$to)
+    )
     const selectedRanges = isSelectionEmpty || !hasOverlappingRanges ? nearCursorRanges : currentSelectionRanges
 
     if (!selectedRanges.length) return
@@ -130,7 +133,12 @@ const DragHandlePlugin = ({
     key: typeof customPluginKey === 'string' ? new PluginKey(customPluginKey) : customPluginKey,
     state: {
       init: () => ({ locked: false }),
-      apply(transaction: Transaction, oldState: { locked: boolean }, newState: EditorState, editorState: EditorState): { locked: boolean } {
+      apply(
+        transaction: Transaction,
+        oldState: { locked: boolean },
+        newState: EditorState,
+        editorState: EditorState
+      ): { locked: boolean } {
         const isLocked = transaction.getMeta('lockDragHandle')
         const shouldHide = transaction.getMeta('hideDragHandle')
         if ((undefined !== isLocked && (isDragLocked = isLocked), shouldHide && tippyInstance)) {
@@ -189,7 +197,7 @@ const DragHandlePlugin = ({
         },
         destroy() {
           cleanup()
-        }
+        },
       }
 
       // 辅助函数
@@ -207,7 +215,7 @@ const DragHandlePlugin = ({
           pointerEvents: 'none',
           position: 'absolute',
           top: '0',
-          left: '0'
+          left: '0',
         })
       }
 
@@ -229,11 +237,11 @@ const DragHandlePlugin = ({
                 name: 'preventOverflow',
                 options: {
                   rootBoundary: 'document',
-                  mainAxis: false
-                }
+                  mainAxis: false,
+                },
               },
             ],
-          }
+          },
         }
       }
 
@@ -273,7 +281,7 @@ const DragHandlePlugin = ({
         onNodeChange?.({
           editor,
           node: selectedNode,
-          pos: selectedNodePosition
+          pos: selectedNodePosition,
         })
 
         updateTippyPosition(targetElement)
@@ -281,7 +289,7 @@ const DragHandlePlugin = ({
 
       function updateTippyPosition(element: HTMLElement) {
         tippyInstance.setProps({
-          getReferenceClientRect: () => element.getBoundingClientRect()
+          getReferenceClientRect: () => element.getBoundingClientRect(),
         })
         tippyInstance.show()
       }
@@ -315,14 +323,14 @@ const DragHandlePlugin = ({
             onNodeChange?.({
               editor: editor,
               node: null,
-              pos: -1
+              pos: -1,
             })
           }
         },
         mousemove: debounce((editorView: EditorView, mouseEvent: MouseEvent) => {
           // 检查拖动句柄是否可用
           if (!dragHandleElement || !tippyInstance || isDragLocked) {
-            return false;
+            return false
           }
 
           // 获取最近的元素
@@ -330,58 +338,58 @@ const DragHandlePlugin = ({
             x: mouseEvent.clientX,
             y: mouseEvent.clientY,
             direction: 'right',
-            editor: editor
-          });
+            editor: editor,
+          })
 
           // 验证目标元素
           if (!nearestElement.resultElement) {
-            return false;
+            return false
           }
 
           if (nearestElement.resultElement === editorView.dom) {
-            return false;
+            return false
           }
 
           // 获取外部节点位置
-          const targetElement = getOuterNodePos(editorView, nearestElement.resultElement);
+          const targetElement = getOuterNodePos(editorView, nearestElement.resultElement)
 
           // 验证 DOM 节点
           if (targetElement === editorView.dom) {
-            return false;
+            return false
           }
 
           if (targetElement?.nodeType !== 1) {
-            return false;
+            return false
           }
 
-          const domPosition = editorView.posAtDOM(targetElement, 0);
-          const ancestorNode = getAncestorNodeAtDepth(editor.state.doc, domPosition);
+          const domPosition = editorView.posAtDOM(targetElement, 0)
+          const ancestorNode = getAncestorNodeAtDepth(editor.state.doc, domPosition)
 
           // 只在节点发生变化时更新
           if (ancestorNode === selectedNode) {
-            return false;
+            return false
           }
 
           // 更新选中的节点
-          const previousNodePosition = getPreviousNodeStartPosition(editor.state.doc, domPosition);
-          selectedNode = ancestorNode;
-          selectedNodePosition = previousNodePosition;
-          relativePosition = getOuterNode(editorView.state, selectedNodePosition);
+          const previousNodePosition = getPreviousNodeStartPosition(editor.state.doc, domPosition)
+          selectedNode = ancestorNode
+          selectedNodePosition = previousNodePosition
+          relativePosition = getOuterNode(editorView.state, selectedNodePosition)
 
           // 触发节点变化回调
           onNodeChange?.({
             editor: editor,
             node: selectedNode,
-            pos: selectedNodePosition
-          });
+            pos: selectedNodePosition,
+          })
 
           // 更新 tippy 位置
           tippyInstance.setProps({
-            getReferenceClientRect: () => targetElement.getBoundingClientRect()
-          });
-          tippyInstance.show();
+            getReferenceClientRect: () => targetElement.getBoundingClientRect(),
+          })
+          tippyInstance.show()
 
-          return false;
+          return false
         }, 100),
       },
     },

@@ -2,7 +2,6 @@ import type { ButtonViewReturnComponentProps } from '@/type'
 import type { StyleValue } from 'vue'
 import { icons } from '@/components/icons'
 
-
 export interface Item {
   title: string
   icon?: keyof typeof icons

@@ -80,6 +80,6 @@ export function useAIConversation(editor: Editor) {
     conversationHistory,
     handleCompletion,
     resetConversation,
-    stopGeneration
+    stopGeneration,
   }
 }

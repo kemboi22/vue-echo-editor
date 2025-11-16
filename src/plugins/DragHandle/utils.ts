@@ -42,7 +42,7 @@ export const findElementNextToCoords = (options: FindElementNextToCoords) => {
   let documentPosition: any = null
   let currentX = x
 
-  for (; null === targetNode && currentX < window.innerWidth && currentX > 0;) {
+  for (; null === targetNode && currentX < window.innerWidth && currentX > 0; ) {
     const elementsAtPoint = document.elementsFromPoint(currentX, y)
     const proseMirrorIndex = elementsAtPoint.findIndex(el => el.classList.contains('ProseMirror'))
     const relevantElements = elementsAtPoint.slice(0, proseMirrorIndex)
@@ -74,6 +74,6 @@ export const findElementNextToCoords = (options: FindElementNextToCoords) => {
   return {
     resultElement: targetElement,
     resultNode: targetNode,
-    pos: documentPosition !== null ? documentPosition : null
+    pos: documentPosition !== null ? documentPosition : null,
   }
 }

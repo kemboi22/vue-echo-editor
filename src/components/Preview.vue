@@ -40,7 +40,7 @@ const currentEditorContent = computed(() => {
       <DialogHeader class="p-6 pb-0">
         <DialogTitle>{{ t('editor.preview.tooltip') }}</DialogTitle>
         <div class="flex justify-center">
-          <div class="hidden items-center gap-1.5 rounded-md border p-[2px] shadow-sm md:flex">
+          <div class="hidden items-center gap-1.5 rounded-md border p-[2px] shadow-xs md:flex">
             <ToggleGroup
               type="single"
               default-value="100"
@@ -50,13 +50,13 @@ const currentEditorContent = computed(() => {
                 }
               "
             >
-              <ToggleGroupItem value="100" class="h-[32px] w-[32px] rounded-sm p-0">
+              <ToggleGroupItem value="100" class="h-[32px] w-[32px] rounded-xs p-0">
                 <Icon name="Monitor" class="w-5 h-5" />
               </ToggleGroupItem>
-              <ToggleGroupItem value="60" class="h-[32px] w-[32px] rounded-sm p-0">
+              <ToggleGroupItem value="60" class="h-[32px] w-[32px] rounded-xs p-0">
                 <Icon name="Tablet" class="w-5 h-5" />
               </ToggleGroupItem>
-              <ToggleGroupItem value="30" class="h-[32px] w-[32px] rounded-sm p-0">
+              <ToggleGroupItem value="30" class="h-[32px] w-[32px] rounded-xs p-0">
                 <Icon name="Phone" class="w-5 h-5" />
               </ToggleGroupItem>
             </ToggleGroup>
@@ -64,7 +64,7 @@ const currentEditorContent = computed(() => {
         </div>
       </DialogHeader>
       <div
-        class="relative overflow-y-auto after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg h-[--container-height] px-4"
+        class="relative overflow-y-auto after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg h-(--container-height) px-4"
       >
         <ResizablePanelGroup id="preview-resizable" direction="horizontal" class="relative z-10 overflow-auto">
           <ResizablePanel
@@ -80,7 +80,7 @@ const currentEditorContent = computed(() => {
           </ResizablePanel>
           <ResizableHandle
             id="block-resizable-handle"
-            class="relative hidden w-3 bg-transparent p-0 after:absolute after:right-0 after:top-1/2 after:h-8 after:w-[6px] after:-translate-y-1/2 after:translate-x-[-1px] after:rounded-full after:bg-border after:transition-all after:hover:h-10 sm:block"
+            class="relative hidden w-3 bg-transparent p-0 after:absolute after:right-0 after:top-1/2 after:h-8 after:w-[6px] after:-translate-y-1/2 after:-translate-x-px after:rounded-full after:bg-border after:transition-all hover:after:h-10 sm:block"
           />
           <ResizablePanel id="block-resizable-panel-2" :default-size="0" :min-size="0" />
         </ResizablePanelGroup>

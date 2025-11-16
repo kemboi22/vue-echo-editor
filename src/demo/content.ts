@@ -245,7 +245,7 @@ export const DEMO_CONTENT = {
     },
     {
       type: 'codeBlock',
-      attrs: { language: "typescript", },
+      attrs: { language: 'typescript' },
       content: [
         {
           type: 'text',

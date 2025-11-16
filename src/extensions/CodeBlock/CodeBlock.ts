@@ -5,7 +5,7 @@ import type { GeneralOptions } from '@/type'
 
 import NodeView from './components/NodeView.vue'
 
-export interface CodeBlockOptions extends GeneralOptions<CodeBlockOptions> { }
+export interface CodeBlockOptions extends GeneralOptions<CodeBlockOptions> {}
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -14,8 +14,6 @@ declare module '@tiptap/core' {
     }
   }
 }
-
-
 
 /**
  * Matches a code block with backticks.
@@ -26,7 +24,6 @@ export const backtickInputRegex = /^```([a-z]+)?[\s\n]$/
  * Matches a code block with tildes.
  */
 export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/
-
 
 export const CodeBlock = Node.create({
   name: 'codeBlock',
@@ -40,9 +37,9 @@ export const CodeBlock = Node.create({
       },
       code: {
         default: '',
-        parseHTML: (element) => {
+        parseHTML: element => {
           return element.textContent || ''
-        }
+        },
       },
       language: {
         default: 'plaintext',
@@ -54,13 +51,13 @@ export const CodeBlock = Node.create({
         default: false,
       },
       tabSize: {
-        default: 2
+        default: 2,
       },
       shouldFocus: {
         default: true,
         parseHTML: () => false,
-        renderHTML: false
-      }
+        renderHTML: false,
+      },
     }
   },
   parseHTML() {
@@ -70,28 +67,24 @@ export const CodeBlock = Node.create({
         preserveWhitespace: 'full',
         getAttrs: (node: HTMLElement) => {
           return {
-            code: node.textContent || ''
+            code: node.textContent || '',
           }
-        }
+        },
       },
       {
         tag: 'pre code',
         preserveWhitespace: 'full',
         getAttrs: (node: HTMLElement) => {
           return {
-            code: node.textContent || ''
+            code: node.textContent || '',
           }
-        }
-      }
+        },
+      },
     ]
   },
   renderHTML({ HTMLAttributes, node }) {
     let code = node.attrs.code || node.content.firstChild?.text || ''
-    return [
-      'pre',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-      ['code', {}, code]
-    ]
+    return ['pre', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), ['code', {}, code]]
   },
   addNodeView() {
     return VueNodeViewRenderer(NodeView)
@@ -99,16 +92,16 @@ export const CodeBlock = Node.create({
   addCommands() {
     return {
       setCodeBlock:
-        (options) =>
-          ({ commands }) => {
-            return commands.insertContent({
-              type: this.name,
-              attrs: {
-                ...options,
-                shouldFocus: true
-              },
-            })
-          },
+        options =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              ...options,
+              shouldFocus: true,
+            },
+          })
+        },
     }
   },
   addKeyboardShortcuts() {

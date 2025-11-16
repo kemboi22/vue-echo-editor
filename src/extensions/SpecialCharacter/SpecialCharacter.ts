@@ -12,7 +12,7 @@ declare module '@tiptap/core' {
     }
   }
 }
-export interface SpecialCharacterOptions extends GeneralOptions<SpecialCharacterOptions> { }
+export interface SpecialCharacterOptions extends GeneralOptions<SpecialCharacterOptions> {}
 
 export const SpecialCharacter = Extension.create<SpecialCharacterOptions>({
   name: 'specialCharacter',
@@ -27,7 +27,7 @@ export const SpecialCharacter = Extension.create<SpecialCharacterOptions>({
             store.toggleSpecialCharacter()
           },
           tooltip: t('editor.specialCharacter.tooltip'),
-          isActive: () => store.state.specialCharacter
+          isActive: () => store.state.specialCharacter,
         },
       }),
     }
@@ -36,22 +36,22 @@ export const SpecialCharacter = Extension.create<SpecialCharacterOptions>({
     return {
       toggleSpecialCharacter:
         () =>
-          ({ editor }) => {
-            store.toggleSpecialCharacter()
-            return true
-          },
+        ({ editor }) => {
+          store.toggleSpecialCharacter()
+          return true
+        },
       insertSpecialCharacter:
         (char: string) =>
-          ({ editor }) => {
-            try {
-              // 直接使用insertContent，这是最安全的方法
-              editor.commands.insertContent(char)
-              return true
-            } catch (error) {
-              console.error('Error in insertSpecialCharacter command:', error)
-              return false
-            }
-          },
+        ({ editor }) => {
+          try {
+            // 直接使用insertContent，这是最安全的方法
+            editor.commands.insertContent(char)
+            return true
+          } catch (error) {
+            console.error('Error in insertSpecialCharacter command:', error)
+            return false
+          }
+        },
     }
   },
 })

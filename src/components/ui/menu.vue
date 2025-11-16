@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-1 bg-background rounded-sm outline-none shadow-md border flex flex-col gap-1"
+    class="p-1 bg-background rounded-xs outline-hidden shadow-md border flex flex-col gap-1"
     tabindex="0"
     ref="menuRef"
   >
@@ -8,7 +8,7 @@
       v-for="(item, index) in menuItems"
       :key="item.label"
       :class="[
-        'relative flex items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors cursor-pointer',
+        'relative flex items-center rounded-xs px-2 py-1.5 text-sm outline-hidden transition-colors cursor-pointer',
         item.isSelected ? 'bg-accent text-accent-foreground' : '',
         'hover:bg-accent hover:text-accent-foreground',
       ]"
@@ -19,14 +19,14 @@
       <Icon v-if="item.children && item.isSelected" name="ChevronRight" class="ml-auto h-4 w-4" />
       <div
         v-if="item.children && item.isSelected"
-        class="absolute left-full top-0 bg-background shadow-md rounded-sm border border-sm"
+        class="absolute left-full top-0 bg-background shadow-md rounded-xs border border-sm"
       >
         <div class="p-1 flex flex-col gap-1 min-w-32">
           <div
             v-for="(subItem, subIndex) in item.children"
             :key="subItem.label"
             :class="[
-              'flex items-center rounded-sm px-2 py-1.5 text-sm whitespace-nowrap outline-none transition-colors cursor-pointer',
+              'flex items-center rounded-xs px-2 py-1.5 text-sm whitespace-nowrap outline-hidden transition-colors cursor-pointer',
               subItem.isSelected ? 'bg-accent text-accent-foreground' : '',
               'hover:bg-accent hover:text-accent-foreground',
             ]"
@@ -148,7 +148,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
       }
       break
 
-    case 'Enter':
+    case 'Enter': {
       e.preventDefault()
       const currentItem = isInSubMenu
         ? menuItems[currentSelectedIndex.value].children?.[currentSubMenuIndex.value]
@@ -157,6 +157,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
         handleClick(currentItem)
       }
       break
+    }
   }
 }
 

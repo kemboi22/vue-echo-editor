@@ -1,7 +1,7 @@
 .echo-editor {
   @apply rounded-[0.5rem] bg-background shadow outline outline-1 relative outline-border;
   &.echo-editor-focus {
-    @apply outline-primary;
+    @apply outline-2 outline-blue-500;
   }
 
   .tiptap {
@@ -146,7 +146,7 @@
     .iframe-wrapper {
       &.focus {
         > div {
-          @apply outline-primary outline-4 outline;
+          @apply outline-4 outline-blue-500;
         }
       }
     }

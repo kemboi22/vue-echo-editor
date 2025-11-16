@@ -210,7 +210,7 @@ defineExpose({ editor })
     <div
       class="relative flex flex-col overflow-hidden"
       :class="{
-        '!fixed bg-background inset-0 z-[10]  w-full h-full m-0 rounded-[0.5rem]': isFullscreen,
+        'fixed! bg-background inset-0 z-10  w-full h-full m-0 rounded-lg': isFullscreen,
       }"
     >
       <Menubars v-if="!hideMenubar" :editor="editor" :disabled="disabled" />

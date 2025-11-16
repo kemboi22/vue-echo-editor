@@ -3,7 +3,7 @@ import { BulletList as TiptapBulletList } from '@tiptap/extension-bullet-list'
 import BulletListMenuButton from './components/BulletListMenuButton.vue'
 import type { GeneralOptions } from '@/type'
 
-export interface BulletListOptions extends TiptapBulletListOptions, GeneralOptions<BulletListOptions> { }
+export interface BulletListOptions extends TiptapBulletListOptions, GeneralOptions<BulletListOptions> {}
 
 export const BulletList = TiptapBulletList.extend<BulletListOptions>({
   addAttributes() {

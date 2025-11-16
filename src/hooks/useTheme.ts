@@ -68,7 +68,7 @@ export function useTheme() {
   }
 
   // 监听系统主题变化
-  systemTheme.addEventListener('change', (e) => {
+  systemTheme.addEventListener('change', e => {
     // 如果当前没有手动设置主题，则跟随系统主题
     if (!localStorage.getItem('echo-editor-dark-mode')) {
       isDark.value = e.matches
@@ -76,22 +76,22 @@ export function useTheme() {
   })
 
   // 监听本地存储变化，同步到本地状态
-  watch(storedTheme, (newColor) => {
+  watch(storedTheme, newColor => {
     theme.value = newColor
   })
 
-  watch(storedBorderRadius, (newRadius) => {
+  watch(storedBorderRadius, newRadius => {
     borderRadius.value = newRadius
   })
 
   // 监听主题色变化，同步到本地存储
-  watch(theme, (newColor) => {
+  watch(theme, newColor => {
     storedTheme.value = newColor
     applyTheme()
   })
 
   // 监听圆角变化，同步到本地存储
-  watch(borderRadius, (newRadius) => {
+  watch(borderRadius, newRadius => {
     storedBorderRadius.value = newRadius
     applyBorderRadius()
   })

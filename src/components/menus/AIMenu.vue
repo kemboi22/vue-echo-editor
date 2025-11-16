@@ -279,9 +279,9 @@ function handleKey(e) {
     @click="handleOverlayClick"
   >
     <BubbleMenu pluginKey="AIMenu" :update-delay="0" v-show="shouldShow" :editor="editor" :tippy-options="tippyOptions">
-      <div @keydown="handleKey" class="relative w-[450px] z-[99]" :class="{ 'shake-animation': isShaking }">
+      <div @keydown="handleKey" class="relative w-[450px] z-99" :class="{ 'shake-animation': isShaking }">
         <div
-          class="border rounded-sm shadow-sm bg-background"
+          class="border rounded-xs shadow-xs bg-background"
           v-show="(status === 'generating' || status === 'completed') && result"
         >
           <div ref="resultContainer" class="p-4 line-height-none block overflow-y-auto" style="max-height: 210px">
@@ -297,7 +297,7 @@ function handleKey(e) {
         </div>
         <form
           @submit="handleGenerate"
-          class="relative w-full items-center flex bg-background mt-3 rounded-md shadow-sm"
+          class="relative w-full items-center flex bg-background mt-3 rounded-md shadow-xs"
         >
           <div
             v-if="status === 'generating'"
@@ -310,7 +310,7 @@ function handleKey(e) {
             ref="inputRef"
             v-else
             :placeholder="t('editor.AI.placeholder')"
-            class="pl-10 pr-20 h-12 outline-none ring-0 focus-visible:ring-0"
+            class="pl-10 pr-20 h-12 outline-hidden ring-0 focus-visible:ring-0"
           />
           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
             <Icon name="Sparkles" class="w-5 h-5" />

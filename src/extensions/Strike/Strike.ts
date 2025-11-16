@@ -3,7 +3,7 @@ import { Strike as TiptapStrike } from '@tiptap/extension-strike'
 import ActionButton from '@/components/ActionButton.vue'
 import type { GeneralOptions } from '@/type'
 
-export interface StrikeOptions extends TiptapStrikeOptions, GeneralOptions<StrikeOptions> { }
+export interface StrikeOptions extends TiptapStrikeOptions, GeneralOptions<StrikeOptions> {}
 
 export const Strike = TiptapStrike.extend<StrikeOptions>({
   addOptions() {

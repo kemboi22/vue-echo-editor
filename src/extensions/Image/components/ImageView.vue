@@ -189,6 +189,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+@reference "../../../styles/global.css";
 .image-view {
   max-width: 100%;
 }
@@ -202,7 +203,7 @@ onBeforeUnmount(() => {
 }
 
 .image-view__body--focused {
-  @apply outline-primary;
+  @apply outline-2 outline-blue-500;
 }
 
 .image-view__body__image {

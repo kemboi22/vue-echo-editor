@@ -36,9 +36,9 @@ const props = withDefaults(defineProps<Props>(), {
       <TooltipTrigger as-child>
         <Button :class="cn('h-[32px] px-1.5 py-0', props.class)" variant="ghost" :disabled="disabled">
           <div class="flex items-center h-full justify-between font-normal w-full">
-            <div class="text-left truncate text-sm flex-grow" v-if="title">{{ title }}</div>
+            <div class="text-left truncate text-sm grow" v-if="title">{{ title }}</div>
             <Icon class="w-[16px] h-[16px]" :name="icon" v-if="icon" />
-            <Icon class="w-3 h-3 ml-1 text-zinc-500 flex-shrink-0" name="MenuDown" />
+            <Icon class="w-3 h-3 ml-1 text-zinc-500 shrink-0" name="MenuDown" />
           </div>
         </Button>
       </TooltipTrigger>

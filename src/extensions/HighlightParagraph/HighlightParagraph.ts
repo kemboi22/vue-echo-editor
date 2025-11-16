@@ -15,27 +15,25 @@ declare module '@tiptap/core' {
        * @description Set replace term in extension.
        */
       clearHighlightParagraph: () => ReturnType
-
     }
   }
 }
 export const HighlightParagraph = Extension.create({
-  name: "highlight-paragraph",
+  name: 'highlight-paragraph',
   addCommands() {
     return {
       setHighlightParagraph:
         (pos: any) =>
-          ({ editor }) => {
-            editor.view.dispatch(editor.view.state.tr.setMeta(HighlightParagraphKey, pos))
-            return false
-          },
+        ({ editor }) => {
+          editor.view.dispatch(editor.view.state.tr.setMeta(HighlightParagraphKey, pos))
+          return false
+        },
       clearHighlightParagraph:
         () =>
-          ({ editor }) => {
-            editor.view.dispatch(editor.view.state.tr.setMeta(HighlightParagraphKey, null))
-            return false
-          },
-
+        ({ editor }) => {
+          editor.view.dispatch(editor.view.state.tr.setMeta(HighlightParagraphKey, null))
+          return false
+        },
     }
   },
   addProseMirrorPlugins() {
@@ -62,18 +60,17 @@ export const HighlightParagraph = Extension.create({
 
             return DecorationSet.create(tr.doc, [
               Decoration.node(highlightPos, highlightPos + node.nodeSize, {
-                class: 'highlight-paragraph'
-              })
+                class: 'highlight-paragraph',
+              }),
             ])
-          }
+          },
         },
         props: {
           decorations(state) {
             return this.getState(state)
-          }
-        }
-      })
+          },
+        },
+      }),
     ]
-  }
+  },
 })
-

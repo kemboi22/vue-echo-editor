@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-background echo-editor">
     <header
-      class="border-grid w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      class="border-grid w-full border-b bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60"
     >
       <div class="container flex h-14 items-center sticky">
         <div class="mr-4 md:mr-1 hidden md:flex">
@@ -32,7 +32,7 @@
           <div class="w-full flex-1 md:w-auto md:flex-none"></div>
           <nav class="flex items-center gap-0.5">
             <a
-              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground w-8 h-8"
+              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground w-8 h-8"
               href="https://github.com/Seedsa/echo-editor"
               target="_blank"
               ><svg viewBox="0 0 15 15" width="1.2em" height="1.2em" class="w-4 h-4">
@@ -82,7 +82,7 @@
           {{ minimal ? 'Full' : 'Minimal' }}
         </button>
       </div>
-      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+      <div class="rounded-lg border bg-card text-card-foreground shadow-xs">
         <EchoEditor
           ref="editor"
           :key="minimal ? 'minimal' : 'full'"
@@ -96,7 +96,7 @@
       </div>
       <div class="mt-6 rounded-lg border bg-muted p-4">
         <h3 class="mb-2 text-sm font-medium">HTML Output</h3>
-        <div class="rounded bg-muted-foreground/5 max-h-[500px] overflow-auto">
+        <div class="rounded-sm bg-muted-foreground/5 max-h-[500px] overflow-auto">
           <span>{{ content }}</span>
         </div>
       </div>

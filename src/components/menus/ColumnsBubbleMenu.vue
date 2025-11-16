@@ -46,7 +46,7 @@ const onDelete = () => {
       sticky: 'popper',
     }"
   >
-    <div class="p-2 bg-background rounded-lg shadow-sm border">
+    <div class="p-2 bg-background rounded-lg shadow-xs border">
       <div class="flex gap-1 items-center">
         <ActionButton
           icon="Trash"

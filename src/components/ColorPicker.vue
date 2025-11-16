@@ -82,7 +82,7 @@ const triggerHtml5Color = () => {
           @click="setColor(undefined)"
         >
           <span
-            class="w-6 h-6 p-0.5 inline-block rounded-sm border cursor-pointer hover:border-border hover:shadow-sm relative after:border-b-2 after:border-b-red-500 after:top-[10px] after:h-0 after:left-0 after:w-6 after:absolute after:block after:rotate-[45deg]"
+            class="w-6 h-6 p-0.5 inline-block rounded-xs border cursor-pointer hover:border-border hover:shadow-xs relative after:border-b-2 after:border-b-red-500 after:top-[10px] after:h-0 after:left-0 after:w-6 after:absolute after:block after:rotate-45"
           >
             <span style="background-color: transparent">
               <svg viewBox="0 0 18 18" style="fill: rgba(0, 0, 0, 0.4); display: none">
@@ -92,7 +92,7 @@ const triggerHtml5Color = () => {
         </div>
         <!-- Color -->
         <div class="flex items-center p-1 rd-1 cursor-pointer hover:bg-accent" @click="setColor(undefined)" v-else>
-          <span class="w-6 h-6 p-0.5 inline-block rounded-sm border border-transparent cursor-pointer"
+          <span class="w-6 h-6 p-0.5 inline-block rounded-xs border border-transparent cursor-pointer"
             ><span
               :style="{ backgroundColor: DEFAULT_COLOR }"
               class="relative w-[18px] h-[18px] block rounded-[2px] border-transparent"
@@ -105,7 +105,7 @@ const triggerHtml5Color = () => {
 
         <span class="flex p-0 w-full h-auto relative last:pb-2" v-for="(items, index) in chunkedColors" :key="index">
           <span
-            class="w-6 h-6 p-0.5 inline-block rounded-sm border border-transparent flex-[0 0 auto] cursor-pointer hover:border-border hover:shadow-sm"
+            class="w-6 h-6 p-0.5 inline-block rounded-xs border border-transparent flex-[0 0 auto] cursor-pointer hover:border-border hover:shadow-xs"
             v-for="(item, index) in items"
             :key="index"
             @click="setColor(item)"
@@ -118,7 +118,7 @@ const triggerHtml5Color = () => {
               </svg>
               <svg
                 v-else
-                class="absolute top-[-1px] left-[1px] w-3 h-3"
+                class="absolute -top-px left-px w-3 h-3"
                 viewBox="0 0 18 18"
                 style="fill: rgb(255, 255, 255); display: block"
               >
@@ -128,7 +128,7 @@ const triggerHtml5Color = () => {
           <div class="text-sm my-1">{{ t('editor.recent') }}</div>
           <span class="flex p-0 w-full h-auto relative last:pb-2">
             <span
-              class="w-6 h-6 p-0.5 inline-block rounded-sm border border-transparent flex-[0 0 auto] cursor-pointer hover:border-border hover:shadow-sm"
+              class="w-6 h-6 p-0.5 inline-block rounded-xs border border-transparent flex-[0 0 auto] cursor-pointer hover:border-border hover:shadow-xs"
               v-for="(item, index) in recentColors"
               :key="index"
               @click="setColor(item)"

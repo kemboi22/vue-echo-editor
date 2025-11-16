@@ -115,18 +115,18 @@ function setActiveItemRef(groupIndex: number, commandIndex: number, el: any) {
 </script>
 <template>
   <div
-    class="rounded-lg bg-background shadow-sm border max-h-[min(80vh,24rem)] overflow-auto flex-wrap mb-8 p-1"
+    class="rounded-lg bg-background shadow-xs border max-h-[min(80vh,24rem)] overflow-auto flex-wrap mb-8 p-1"
     ref="scrollContainer"
   >
     <div class="grid grid-cols-1 gap-0.5 min-w-48" v-if="items?.length">
       <template v-for="(group, groupIndex) in items" :key="group.title">
         <div
-          className="text-[0.65rem] col-[1/-1] mx-2 mt-2 font-semibold tracking-wider select-none uppercase first:mt-0.5"
+          className="text-[0.65rem] col-span-full mx-2 mt-2 font-semibold tracking-wider select-none uppercase first:mt-0.5"
         >
           {{ group.title }}
         </div>
         <button
-          class="flex items-center gap-3 px-2 py-1.5 text-sm text-neutral-800 dark:text-neutral-200 text-left w-full rounded-sm outline-none transition-colors"
+          class="flex items-center gap-3 px-2 py-1.5 text-sm text-neutral-800 dark:text-neutral-200 text-left w-full rounded-xs outline-hidden transition-colors"
           :class="[
             selectedGroupIndex === groupIndex && selectedCommandIndex === commandIndex
               ? 'bg-accent text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200'

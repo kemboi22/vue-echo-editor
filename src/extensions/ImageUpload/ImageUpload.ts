@@ -57,8 +57,8 @@ export const ImageUpload = Node.create<ImageUploadOptions>({
     return {
       setImageUpload:
         () =>
-          ({ commands }) =>
-            commands.insertContent(`<div data-type="${this.name}"></div>`),
+        ({ commands }) =>
+          commands.insertContent(`<div data-type="${this.name}"></div>`),
     }
   },
 

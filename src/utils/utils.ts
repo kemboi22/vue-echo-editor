@@ -16,7 +16,6 @@ export const getCssUnitWithDefault = (value?: string | number, defaultUnit: stri
   return isNaN(num) ? value : num + unit
 }
 
-
 export const isNumber = (value: unknown): value is number => typeof value === 'number'
 
 export const isString = (value: unknown): value is string => typeof value === 'string'
