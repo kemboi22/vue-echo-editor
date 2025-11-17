@@ -1,11 +1,11 @@
 import { Extension } from '@tiptap/core'
-import { useToast } from '@/components/ui/toast/use-toast'
 import { hasExtension } from '@/utils/utils'
 import { useFileDialog } from '@vueuse/core'
 import ActionButton from '@/components/ActionButton.vue'
 import type { GeneralOptions } from '@/type'
 import { useLocale } from '@/locales'
 import { base64ToBlob, blobToFile } from './utils'
+import { toast } from 'vue-sonner'
 
 export interface ImportWordOptions extends GeneralOptions<ImportWordOptions> {
   /**
@@ -60,7 +60,6 @@ export const ImportWord = Extension.create<ImportWordOptions>({
       toggleImportWord:
         () =>
         ({ chain, editor }) => {
-          const { toast } = useToast()
           const { t } = useLocale()
           async function filerImage(html: string) {
             const parser = new DOMParser()
@@ -109,9 +108,7 @@ export const ImportWord = Extension.create<ImportWordOptions>({
           async function handleResult(htmlResult: string) {
             const html = await filerImage(htmlResult)
             editor.chain().setContent(html.toString(), true).run()
-            toast({
-              title: t.value('editor.importWord.success'),
-            })
+            toast.success(t.value('editor.importWord.success'))
           }
           const { open, onChange } = useFileDialog({
             accept: '.docx',
@@ -161,10 +158,7 @@ export const ImportWord = Extension.create<ImportWordOptions>({
                   handleResult(data.html)
                 })
                 .catch(error => {
-                  toast({
-                    title: t.value('editor.importWord.error'),
-                    variant: 'destructive',
-                  })
+                  toast.error(t.value('editor.importWord.error'))
                   console.error('Error:', error)
                 })
             }

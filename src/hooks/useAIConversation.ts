@@ -1,12 +1,11 @@
 import { ref } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import { useToast } from '@/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useAIConversation(editor: Editor) {
   const result = ref<string>('')
   const status = ref<'init' | 'generating' | 'completed'>('init')
   const conversationHistory = ref<Array<{ role: string; content: string }>>([])
-  const { toast } = useToast()
   const abortController = ref<AbortController | null>(null)
 
   async function handleCompletion(context: string, prompt: string) {
@@ -51,10 +50,7 @@ export function useAIConversation(editor: Editor) {
       if (error.name === 'AbortError') {
         status.value = 'init'
       } else {
-        toast({
-          title: error?.message || 'Failed to generate AI completion',
-          variant: 'destructive',
-        })
+        toast.error(error?.message ?? 'Failed to generate AI completion')
       }
       throw error
     }
