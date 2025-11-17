@@ -2,7 +2,7 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
-
+import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
@@ -15,6 +15,7 @@ export default defineConfig({
       exclude: ['src/demo/**/*', 'examples/**/*'],
     }),
     tailwindcss(),
+    vueDevTools(),
   ],
   optimizeDeps: {
     include: ['vue'],
