@@ -234,7 +234,7 @@ watch(
               <Icon name="AlignCenter" />
               <span>{{ t('editor.textalign.tooltip') }}</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuPortal to=".echo-editor">
+            <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuCheckboxItem
                   :model-value="editor.isActive({ textAlign: 'left' }) ?? false"
@@ -272,7 +272,7 @@ watch(
               <Icon name="IndentIncrease" />
               <span>{{ t('editor.indent') }}</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuPortal to=".echo-editor">
+            <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
                   class="flex gap-3"
