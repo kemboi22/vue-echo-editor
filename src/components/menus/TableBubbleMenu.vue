@@ -90,7 +90,7 @@ const getReferenceClientRect: GetReferenceClientRect = () => {
     }"
   >
     <div
-      class="min-w-32 flex flex-row h-full items-center leading-none gap-0.5 p-2 w-full bg-background rounded-lg shadow-sm border border-border"
+      class="min-w-32 flex flex-row h-full items-center leading-none gap-0.5 p-2 w-full bg-background rounded-lg shadow-xs border border-border"
     >
       <ActionButton
         icon="BetweenHorizonalEnd"

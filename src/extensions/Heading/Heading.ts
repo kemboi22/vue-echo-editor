@@ -10,7 +10,7 @@ import type { BaseKitOptions } from '../BaseKit'
 
 import type { GeneralOptions } from '@/type'
 
-export interface HeadingOptions extends TiptapHeadingOptions, GeneralOptions<HeadingOptions> { }
+export interface HeadingOptions extends TiptapHeadingOptions, GeneralOptions<HeadingOptions> {}
 
 export const Heading = TiptapHeading.extend<HeadingOptions>({
   addOptions() {

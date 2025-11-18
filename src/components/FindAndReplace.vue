@@ -134,12 +134,12 @@ props.editor.on('blur', () => {
 <template>
   <div
     v-if="store.state.findAndReplace"
-    class="findAndReplaceDialog echo-editor absolute bg-white shadow-lg rounded-lg p-4 w-[320px] border z-[11]"
+    class="findAndReplaceDialog echo-editor absolute bg-white shadow-lg rounded-lg p-4 w-[320px] border z-11"
     style="right: 12px; top: 12px"
   >
     <button
       @click="store.toggleFindAndReplace()"
-      class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      class="absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
     >
       <Icon name="Close" />
     </button>

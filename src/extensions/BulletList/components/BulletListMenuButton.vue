@@ -63,7 +63,7 @@ function toggleBulletList(item: BulletListOption): void {
           <MenuItem class="p-0" @click="toggleBulletList(item)">
             <div
               :class="[active === item.value ? 'bg-accent border border-accent-foreground' : '']"
-              class="h-[48px] flex flex-col w-[48px] box-border rounded-sm border"
+              class="h-[48px] flex flex-col w-[48px] box-border rounded-xs border"
             >
               <ol
                 :style="{ listStyleType: item.value, lineHeight: 1 }"

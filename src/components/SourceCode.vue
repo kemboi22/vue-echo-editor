@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
       </DialogHeader>
 
       <div ref="containerRef" class="flex border mx-1" :class="` ${isDark ? 'atom-one-dark' : 'vs-code-light'}`" />
-      <DialogFooter class="p-6 flex-shrink-0 pt-0 sm:justify-between">
+      <DialogFooter class="p-6 shrink-0 pt-0 sm:justify-between">
         <div class="flex items-center gap-3">
           <Button variant="outline" size="sm" @click="copyCode">
             <Icon name="Copy" class="w-4 h-4 mr-1" />

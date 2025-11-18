@@ -4,15 +4,18 @@ export const DEFAULT_SHORTCUTS = [
     children: [
       {
         label: 'editor.AI.shortcuts.generate.improve',
-        prompt: 'Rewrite this content with no spelling mistakes, proper grammar, and with more descriptive language, using best writing practices without losing the original meaning.',
+        prompt:
+          'Rewrite this content with no spelling mistakes, proper grammar, and with more descriptive language, using best writing practices without losing the original meaning.',
       },
       {
         label: 'editor.AI.shortcuts.generate.shorter',
-        prompt: 'Remove any repetitive, redundant, or non-essential writing in this content without changing the meaning or losing any key information.',
+        prompt:
+          'Remove any repetitive, redundant, or non-essential writing in this content without changing the meaning or losing any key information.',
       },
       {
         label: 'editor.AI.shortcuts.generate.longer',
-        prompt: 'Expand upon this content with descriptive language and more detailed explanations, to make the writing easier to understand and increase the length of the content.',
+        prompt:
+          'Expand upon this content with descriptive language and more detailed explanations, to make the writing easier to understand and increase the length of the content.',
       },
       {
         label: 'editor.AI.shortcuts.generate.summarize',
@@ -20,7 +23,8 @@ export const DEFAULT_SHORTCUTS = [
       },
       {
         label: 'editor.AI.shortcuts.generate.continue',
-        prompt: 'Expand and continue this content, maintaining the original tone and style. Ensure that the continuation flows naturally from the existing writing while adding new ideas, further details, or continuing the narrative or argument in a coherent manner.',
+        prompt:
+          'Expand and continue this content, maintaining the original tone and style. Ensure that the continuation flows naturally from the existing writing while adding new ideas, further details, or continuing the narrative or argument in a coherent manner.',
       },
     ],
   },
@@ -29,11 +33,13 @@ export const DEFAULT_SHORTCUTS = [
     children: [
       {
         label: 'editor.AI.shortcuts.tone.professional',
-        prompt: 'Rewrite this content using polished, formal, and respectful language to convey professional expertise and competence.',
+        prompt:
+          'Rewrite this content using polished, formal, and respectful language to convey professional expertise and competence.',
       },
       {
         label: 'editor.AI.shortcuts.tone.casual',
-        prompt: 'Rewrite this content with casual, informal language to convey a casual conversation with a real person.',
+        prompt:
+          'Rewrite this content with casual, informal language to convey a casual conversation with a real person.',
       },
       {
         label: 'editor.AI.shortcuts.tone.direct',

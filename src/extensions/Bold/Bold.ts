@@ -4,7 +4,7 @@ import ActionButton from '@/components/ActionButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface BoldOptions extends TiptapImageOptions, GeneralOptions<BoldOptions> { }
+export interface BoldOptions extends TiptapImageOptions, GeneralOptions<BoldOptions> {}
 
 export const Bold = TiptapBold.extend<BoldOptions>({
   addOptions() {

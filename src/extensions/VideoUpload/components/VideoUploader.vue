@@ -58,7 +58,7 @@ function handleClick() {
     <Popover defaultOpen>
       <PopoverTrigger as-child>
         <div
-          class="flex items-center w-full p-3 my-3 hover:bg-accent border border-border text-muted-foreground cursor-pointer rounded-sm transition-all"
+          class="flex items-center w-full p-3 my-3 hover:bg-accent border border-border text-muted-foreground cursor-pointer rounded-xs transition-all"
         >
           <div class="flex justify-center items-center gap-3 text-s" v-if="loading">
             <Icon class="animate-spin w-6 h-6" name="LoaderCircle" />

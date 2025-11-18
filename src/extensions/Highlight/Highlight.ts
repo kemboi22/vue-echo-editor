@@ -4,7 +4,7 @@ import HighlightActionButton from './components/HighlightActionButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface HighlightOptions extends TiptapHighlightOptions, GeneralOptions<HighlightOptions> { }
+export interface HighlightOptions extends TiptapHighlightOptions, GeneralOptions<HighlightOptions> {}
 
 export const Highlight = TiptapHighlight.extend<HighlightOptions>({
   addOptions() {

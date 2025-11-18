@@ -2,7 +2,7 @@
   <node-view-wrapper :id="node.attrs.id" class="echo-node-view my-4">
     <div
       ref="containerRef"
-      :class="`relative ${isDark ? 'atom-one-dark' : 'vs-code-light'} w-full overflow-hidden rounded-sm outline-1 outline-solid outline-border outline`"
+      :class="`relative ${isDark ? 'atom-one-dark' : 'vs-code-light'} w-full overflow-hidden rounded-xs outline-1 outline-solid outline-border outline-solid`"
     >
       <div
         v-if="editor.isEditable"
@@ -13,7 +13,7 @@
             <Tooltip>
               <TooltipTrigger class="w-[160px]">
                 <Select v-model:model-value="node.attrs.language">
-                  <SelectTrigger class="w-[160px] border-none shadow-none outline-none text-sm h-7">
+                  <SelectTrigger class="w-[160px] border-none shadow-none outline-hidden text-sm h-7">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
                   <SelectContent @close-auto-focus="e => e.preventDefault()">
@@ -31,7 +31,7 @@
           <TooltipProvider :delay-duration="0">
             <Tooltip>
               <TooltipTrigger>
-                <div @click="copyCode" class="h-7 w-7 rounded-sm flex justify-center items-center cursor-pointer">
+                <div @click="copyCode" class="h-7 w-7 rounded-xs flex justify-center items-center cursor-pointer">
                   <Icon name="Copy" class="w-4 h-4"></Icon>
                 </div>
               </TooltipTrigger>
@@ -46,7 +46,7 @@
               <TooltipTrigger>
                 <div
                   @click="toggleLineNumbers"
-                  class="h-7 w-7 rounded-sm flex justify-center items-center cursor-pointer"
+                  class="h-7 w-7 rounded-xs flex justify-center items-center cursor-pointer"
                   :class="{ 'bg-accent': node.attrs.lineNumbers }"
                 >
                   <Icon name="List" class="w-4 h-4"></Icon>
@@ -63,7 +63,7 @@
               <TooltipTrigger>
                 <div
                   @click="toggleWordWrap"
-                  class="h-7 w-7 rounded-sm flex justify-center items-center cursor-pointer"
+                  class="h-7 w-7 rounded-xs flex justify-center items-center cursor-pointer"
                   :class="{ 'bg-accent': node.attrs.wordWrap }"
                 >
                   <Icon name="WrapText" class="w-4 h-4"></Icon>
@@ -79,7 +79,7 @@
             <Tooltip>
               <TooltipTrigger>
                 <Select v-model:model-value="node.attrs.tabSize">
-                  <SelectTrigger class="w-[60px] border-none outline-none text-sm h-7">
+                  <SelectTrigger class="w-[60px] border-none outline-hidden text-sm h-7">
                     <Icon name="IndentIncrease" class="w-4 h-4" />
                   </SelectTrigger>
                   <SelectContent @close-auto-focus="e => e.preventDefault()">
@@ -260,6 +260,7 @@ watch(
 </script>
 
 <style>
+@reference "tailwindcss";
 .toolbar-divider {
   @apply bg-gray-400;
   width: 1px;
@@ -271,7 +272,7 @@ watch(
   max-height: 560px;
   font-size: 14px;
   textarea {
-    @apply caret-primary;
+    /* @apply caret-primary; */
   }
   textarea[aria-readonly='true'] {
     caret-color: transparent;

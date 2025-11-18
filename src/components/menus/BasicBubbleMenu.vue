@@ -66,7 +66,8 @@ const items = computed(() => {
 <template>
   <BubbleMenu v-show="items.length && !store?.state.AIMenu" :editor="editor" :tippy-options="tippyOptions">
     <div
-      class="border px-3 py-2 transition-all select-none pointer-events-auto shadow-sm rounded-sm bg-background w-auto max-w-[calc(-68px_+_100vw)] overflow-x-auto"
+      class="border px-3 py-2 transition-all select-none pointer-events-auto shadow-xs rounded-xs bg-popover text-popover-foreground backdrop-blur-md z-50 w-auto max-w-[calc(-68px+100vw)] overflow-x-auto"
+      style="background-color: hsl(var(--popover)); color: hsl(var(--popover-foreground))"
     >
       <div class="flex items-center flex-nowrap whitespace-nowrap h-[26px] justify-start relative gap-0.5">
         <template v-for="(item, key) in items" :key="key">
@@ -80,7 +81,7 @@ const items = computed(() => {
             :editor="editor"
             :disabled="disabled || item.componentProps?.disabled"
           >
-            <template v-for="(element, slotName) in item.componentSlots" :key="slotName" #[`${slotName}`]="values">
+            <template v-for="(element, slotName) in item.componentSlots" :key="slotName" #`${slotName}`]="values">
               <component :is="element" v-bind="values?.props" />
             </template>
           </component>

@@ -61,7 +61,7 @@ function reset() {
             <div class="font-semibold leading-none tracking-tight">Theme Customizer</div>
             <div class="text-xs text-muted-foreground">Customize your components colors.</div>
           </div>
-          <Button variant="ghost" @click="reset" size="icon" class="ml-auto rounded-[0.5rem]">
+          <Button variant="ghost" @click="reset" size="icon" class="ml-auto rounded-lg">
             <Icon name="Refresh" />
             <span class="sr-only">重置</span>
           </Button>
@@ -81,7 +81,7 @@ function reset() {
                 }"
                 @click="setTheme(color.name)"
               >
-                <span class="h-5 w-5 rounded-full flex items-center justify-center shrink-0 bg-[--theme-primary]">
+                <span class="h-5 w-5 rounded-full flex items-center justify-center shrink-0 bg-(--theme-primary)">
                   <Icon name="Check" v-if="color.name === modelValue" class="h-3 w-3 text-white" />
                 </span>
                 <span class="ml-2 text-xs capitalize">

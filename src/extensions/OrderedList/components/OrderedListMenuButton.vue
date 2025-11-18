@@ -92,7 +92,7 @@ function toggleOrderedList(item: OrderedListOption) {
           <MenuItem class="p-0" @click="toggleOrderedList(item)">
             <div
               :class="[active === item.value ? 'bg-accent border border-accent-foreground' : '']"
-              class="h-[72px] flex flex-col w-[72px] box-border rounded-sm border"
+              class="h-[72px] flex flex-col w-[72px] box-border rounded-xs border"
             >
               <ol
                 :style="{ listStyleType: item.value, lineHeight: 1 }"

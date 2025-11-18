@@ -551,7 +551,7 @@ const isChecked = (checked?: boolean | (() => boolean)) => {
 
 <template>
   <Menubar
-    class="rounded-b-none shadow-none border-t-transparent border-l-transparent border-r-transparent rounded-t-[0.5rem]"
+    class="rounded-b-none shadow-none border-t-transparent border-l-transparent border-r-transparent rounded-t-lg"
   >
     <MenubarMenu v-for="(item, index) in loadedMenuItems" :key="index">
       <MenubarTrigger>{{ t(item.title) }}</MenubarTrigger>

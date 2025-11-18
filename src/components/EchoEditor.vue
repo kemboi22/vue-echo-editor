@@ -27,8 +27,8 @@ import SourceCode from './SourceCode.vue'
 import FindAndReplace from './FindAndReplace.vue'
 import type { EchoEditorProps, EchoEditorEmits } from '@/type'
 import { useDark } from '@vueuse/core'
-import Toaster from '@/components/ui/toast/Toaster.vue'
 import { useEditorFocus } from '@/hooks/useEditorFocus'
+import { Toaster } from './ui/sonner'
 
 type KeyDownHandler = NonNullable<EditorOptions['editorProps']['handleKeyDown']>
 type UpdateHandler = NonNullable<EditorOptions['onUpdate']>
@@ -210,7 +210,7 @@ defineExpose({ editor })
     <div
       class="relative flex flex-col overflow-hidden"
       :class="{
-        '!fixed bg-background inset-0 z-[10]  w-full h-full m-0 rounded-[0.5rem]': isFullscreen,
+        'fixed! bg-background inset-0 z-10  w-full h-full m-0 rounded-lg': isFullscreen,
       }"
     >
       <Menubars v-if="!hideMenubar" :editor="editor" :disabled="disabled" />

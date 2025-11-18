@@ -148,7 +148,7 @@ const extendedLatinCharacters: Character[] = [
   { code: 194, name: 'A - circumflex', char: 'Â' },
   { code: 195, name: 'A - tilde', char: 'Ã' },
   { code: 196, name: 'A - diaeresis', char: 'Ä' },
-  { code: 197, name: 'A - ring above', char: 'Å' },
+  { code: 197, name: 'A - ring-3 above', char: 'Å' },
   { code: 256, name: 'A - macron', char: 'Ā' },
   { code: 198, name: 'ligature AE', char: 'Æ' },
   { code: 199, name: 'C - cedilla', char: 'Ç' },
@@ -187,7 +187,7 @@ const extendedLatinCharacters: Character[] = [
   { code: 226, name: 'a - circumflex', char: 'â' },
   { code: 227, name: 'a - tilde', char: 'ã' },
   { code: 228, name: 'a - diaeresis', char: 'ä' },
-  { code: 229, name: 'a - ring above', char: 'å' },
+  { code: 229, name: 'a - ring-3 above', char: 'å' },
   { code: 257, name: 'a - macron', char: 'ā' },
   { code: 230, name: 'ligature ae', char: 'æ' },
   { code: 231, name: 'c - cedilla', char: 'ç' },
@@ -325,8 +325,6 @@ const arrowCharacters: Character[] = [
   { code: 8207, name: 'right-to-left mark', char: '‏' },
 ]
 
-
-
 // 所有字符分类
 export const characterCategories: CharacterCategory[] = [
   {
@@ -377,9 +375,10 @@ export function searchCharacters(characters: Character[], searchTerm: string): C
   if (!searchTerm) return characters
 
   const term = searchTerm.toLowerCase()
-  return characters.filter(char =>
-    char.name.toLowerCase().includes(term) ||
-    char.char.toLowerCase().includes(term) ||
-    char.char.toLowerCase().replace(/\s+/g, '').includes(term)
+  return characters.filter(
+    char =>
+      char.name.toLowerCase().includes(term) ||
+      char.char.toLowerCase().includes(term) ||
+      char.char.toLowerCase().replace(/\s+/g, '').includes(term)
   )
 }

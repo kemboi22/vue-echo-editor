@@ -5,7 +5,7 @@ import OrderedListMenuButton from './components/OrderedListMenuButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface OrderedListOptions extends TiptapOrderedListOptions, GeneralOptions<OrderedListOptions> { }
+export interface OrderedListOptions extends TiptapOrderedListOptions, GeneralOptions<OrderedListOptions> {}
 
 export const OrderedList = TiptapOrderedList.extend<OrderedListOptions>({
   addAttributes() {

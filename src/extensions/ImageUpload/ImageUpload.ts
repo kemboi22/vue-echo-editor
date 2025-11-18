@@ -4,7 +4,7 @@ import { useLocale } from '@/locales'
 import { Plugin } from '@tiptap/pm/state'
 import ActionButton from '@/components/ActionButton.vue'
 import { UploadImagesPlugin, createImageUpload, handleImagePaste, handleImageDrop } from '@/plugins/image-upload'
-import { useToast } from '@/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export interface ImageUploadOptions {
   upload: (file: File) => Promise<string>
@@ -57,8 +57,8 @@ export const ImageUpload = Node.create<ImageUploadOptions>({
     return {
       setImageUpload:
         () =>
-          ({ commands }) =>
-            commands.insertContent(`<div data-type="${this.name}"></div>`),
+        ({ commands }) =>
+          commands.insertContent(`<div data-type="${this.name}"></div>`),
     }
   },
 
@@ -84,16 +84,18 @@ export const ImageUpload = Node.create<ImageUploadOptions>({
   },
 
   addProseMirrorPlugins() {
-    const { toast } = useToast()
     const { t } = useLocale()
 
     const validateFile = (file: File): boolean => {
       if (!this.options.acceptMimes.includes(file.type)) {
-        toast({ description: t.value('editor.imageUpload.fileTypeNotSupported'), duration: 2000 })
+        toast.error(t.value('editor.imageUpload.fileTypeNotSupported'), {
+          description: t.value('editor.imageUpload.fileTypeNotSupported'),
+          duration: 2000,
+        })
         return false
       }
       if (file.size > this.options.maxSize) {
-        toast({
+        toast.error(t.value('editor.imageUpload.fileSizeTooBig'), {
           description: `${t.value('editor.imageUpload.fileSizeTooBig')} ${formatFileSize(this.options.maxSize)}.`,
           duration: 2000,
         })

@@ -8,13 +8,13 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import AiCompletion from './components/AiCompletion.vue'
 import { useFocus } from '@vueuse/core'
-import { useToast } from '@/components/ui/toast/use-toast'
 import { Icon } from '@/components/icons'
 import Menu from '../ui/menu.vue'
 import { DOMSerializer } from 'prosemirror-model'
 import { useAIConversation } from '@/hooks/useAIConversation'
 import { DEFAULT_SHORTCUTS } from '@/extensions/AI/constants'
 import type { Props as TippyProps } from 'tippy.js'
+import { toast } from 'vue-sonner'
 
 interface Props {
   editor: Editor
@@ -37,8 +37,6 @@ const tippyInstance = ref<any>(null)
 const menuRef = ref()
 
 const { result, status, handleCompletion, resetConversation, stopGeneration } = useAIConversation(props.editor)
-
-const { toast } = useToast()
 
 interface ShortcutItem {
   label: string
@@ -85,10 +83,8 @@ watch(
 
 async function handleGenerate() {
   if (!props.editor) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: t.value('editor.AI.editorNotFound'),
-      variant: 'destructive',
     })
     return
   }
@@ -115,10 +111,8 @@ async function handleGenerate() {
     await nextTick()
     focused.value = true
   } catch (error) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: error instanceof Error ? error.message : t.value('editor.AI.unknownError'),
-      variant: 'destructive',
     })
     handleClose()
   }
@@ -163,10 +157,8 @@ function handleClose() {
 
 function handleReGenerate() {
   if (!cachedPrompt.value?.context || !cachedPrompt.value?.prompt) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: t.value('editor.AI.noCachedPrompt'),
-      variant: 'destructive',
     })
     return
   }
@@ -179,18 +171,14 @@ function handleReGenerate() {
         scrollToBottom()
       })
       .catch(error => {
-        toast({
-          title: t.value('editor.AI.error'),
+        toast.error(t.value('editor.AI.error'), {
           description: error instanceof Error ? error.message : t.value('editor.AI.regenerateError'),
-          variant: 'destructive',
         })
         handleClose()
       })
   } catch (error) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: error instanceof Error ? error.message : t.value('editor.AI.unknownError'),
-      variant: 'destructive',
     })
     handleClose()
   }
@@ -209,10 +197,8 @@ function handleOverlayClick(): void {
 
 function shortcutClick(item: MenuItem) {
   if (!props.editor) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: t.value('editor.AI.editorNotFound'),
-      variant: 'destructive',
     })
     return
   }
@@ -232,18 +218,15 @@ function shortcutClick(item: MenuItem) {
         focused.value = true
       })
       .catch(error => {
-        toast({
-          title: t.value('editor.AI.error'),
+        toast.error(t.value('editor.AI.error'), {
           description: error instanceof Error ? error.message : t.value('editor.AI.shortcutError'),
-          variant: 'destructive',
         })
+
         handleClose()
       })
   } catch (error) {
-    toast({
-      title: t.value('editor.AI.error'),
+    toast.error(t.value('editor.AI.error'), {
       description: error instanceof Error ? error.message : t.value('editor.AI.unknownError'),
-      variant: 'destructive',
     })
     handleClose()
   }
@@ -279,9 +262,9 @@ function handleKey(e) {
     @click="handleOverlayClick"
   >
     <BubbleMenu pluginKey="AIMenu" :update-delay="0" v-show="shouldShow" :editor="editor" :tippy-options="tippyOptions">
-      <div @keydown="handleKey" class="relative w-[450px] z-[99]" :class="{ 'shake-animation': isShaking }">
+      <div @keydown="handleKey" class="relative w-[450px] z-99" :class="{ 'shake-animation': isShaking }">
         <div
-          class="border rounded-sm shadow-sm bg-background"
+          class="border rounded-xs shadow-xs bg-background"
           v-show="(status === 'generating' || status === 'completed') && result"
         >
           <div ref="resultContainer" class="p-4 line-height-none block overflow-y-auto" style="max-height: 210px">
@@ -297,7 +280,7 @@ function handleKey(e) {
         </div>
         <form
           @submit="handleGenerate"
-          class="relative w-full items-center flex bg-background mt-3 rounded-md shadow-sm"
+          class="relative w-full items-center flex bg-background mt-3 rounded-md shadow-xs"
         >
           <div
             v-if="status === 'generating'"
@@ -310,7 +293,7 @@ function handleKey(e) {
             ref="inputRef"
             v-else
             :placeholder="t('editor.AI.placeholder')"
-            class="pl-10 pr-20 h-12 outline-none ring-0 focus-visible:ring-0"
+            class="pl-10 pr-20 h-12 outline-hidden ring-0 focus-visible:ring-0"
           />
           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
             <Icon name="Sparkles" class="w-5 h-5" />

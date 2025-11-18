@@ -38,6 +38,6 @@ export function useEditorFocus({ editor, wait = 250 }: UseEditorFocusOptions) {
   })
 
   return {
-    isFocused
+    isFocused,
   }
 }

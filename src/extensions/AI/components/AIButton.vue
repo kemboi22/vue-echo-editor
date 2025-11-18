@@ -5,7 +5,7 @@ import { icons } from '@/components/icons'
 import { useTiptapStore } from '@/hooks/useStore'
 import type { Editor } from '@tiptap/vue-3'
 import ActionButton from '@/components/ActionButton.vue'
-import { useToast } from '@/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 interface Props {
   editor: Editor
@@ -37,22 +37,15 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const store = useTiptapStore()
-const { toast } = useToast()
 
 function handleOpen() {
   const completionsFunc = props.editor.extensionManager.extensions.find(e => e.name === 'AI')?.options?.completions
   if (typeof completionsFunc !== 'function') {
-    toast({
-      title: 'AI completions method is not set or is not a valid function',
-      variant: 'destructive',
-    })
+    toast.error('AI completions method is not set or is not a valid function')
     return
   }
   if (completionsFunc.constructor.name !== 'AsyncFunction') {
-    toast({
-      title: 'AI completions method must be an asynchronous function',
-      variant: 'destructive',
-    })
+    toast.error('AI completions method must be an asynchronous function')
     return
   }
   store!.state.AIMenu = true
