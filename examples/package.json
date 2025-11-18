@@ -6,11 +6,12 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
     "echo-editor": "workspace:*",
-    "tailwindcss": "^3.4.3",
+    "file-saver": "latest",
     "openai": "4.47.1",
     "prosemirror-docx": "latest",
-    "file-saver": "latest",
+    "tailwindcss": "^4.1.17",
     "vite-svg-loader": "latest"
   }
 }
