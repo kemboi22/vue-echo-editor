@@ -1,14 +1,14 @@
 {
-  "name": "echo-editor",
+  "name": "vue-echo-editor",
   "version": "0.5.0",
   "private": false,
   "license": "MIT",
   "description": "A modern AI-powered WYSIWYG rich-text editor for Vue, based on Tiptap and shadcn-vue",
   "author": "SEED<hello.mr.lji@gmail.com>",
-  "homepage": "https://github.com/Seedsa/echo-editor/",
+  "homepage": "https://github.com/kemboi22/vue-echo-editor/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Seedsa/echo-editor/"
+    "url": "https://github.com/kemboi22/vue-echo-editor/"
   },
   "scripts": {
     "dev": "vite",
