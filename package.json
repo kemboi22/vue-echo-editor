@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/kemboi22/vue-echo-editor/"
   },
+  "packageManager": "pnpm@10.25.0",
   "scripts": {
     "dev": "vite",
     "examples": "pnpm build:lib && pnpm --dir ./examples run dev",
