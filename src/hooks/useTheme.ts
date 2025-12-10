@@ -56,6 +56,13 @@ export function useTheme() {
     // 添加主题色类名到根元素
     root.classList.remove(...THEMES.map(c => `theme-${c.name}`))
     root.classList.add(`theme-${theme.value}`)
+
+    // 应用或移除 dark 类
+    if (isDarkMode) {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
   }
 
   // 应用圆角
