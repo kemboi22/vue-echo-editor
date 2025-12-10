@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import type { Editor } from '@tiptap/core'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Icon } from '@/components/icons'
@@ -19,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const { t } = useLocale()
 const store = useTiptapStore()
-const resizableRef = ref<InstanceType<typeof ResizablePanel>>()
+const currentSize = ref('100')
 
 function openChange(e: boolean) {
   store!.state.showPreview = e
@@ -30,6 +29,12 @@ function handleClose() {
 const currentEditorContent = computed(() => {
   return props.editor.getHTML()
 })
+
+function handleSizeChange(value: any) {
+  if (typeof value === 'string') {
+    currentSize.value = value
+  }
+}
 </script>
 
 <template>
@@ -41,15 +46,7 @@ const currentEditorContent = computed(() => {
         <DialogTitle>{{ t('editor.preview.tooltip') }}</DialogTitle>
         <div class="flex justify-center">
           <div class="hidden items-center gap-1.5 rounded-md border p-[2px] shadow-xs md:flex">
-            <ToggleGroup
-              type="single"
-              default-value="100"
-              @update:model-value="
-                (value: any) => {
-                  resizableRef?.resize(parseInt(value))
-                }
-              "
-            >
+            <ToggleGroup type="single" :model-value="currentSize" @update:model-value="handleSizeChange">
               <ToggleGroupItem value="100" class="h-[32px] w-[32px] rounded-xs p-0">
                 <Icon name="Monitor" class="w-5 h-5" />
               </ToggleGroupItem>
@@ -66,24 +63,16 @@ const currentEditorContent = computed(() => {
       <div
         class="relative overflow-y-auto after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg h-(--container-height) px-4"
       >
-        <ResizablePanelGroup id="preview-resizable" direction="horizontal" class="relative z-10 overflow-auto">
-          <ResizablePanel
-            ref="resizableRef"
-            class="relative rounded-lg border bg-background transition-all"
-            :default-size="100"
-            :min-size="30"
-            id="preview-resize-panel-1"
+        <div class="relative z-10 overflow-auto flex justify-center">
+          <div
+            class="relative rounded-lg border bg-background transition-all mx-auto"
+            :style="{ width: currentSize + '%' }"
           >
             <ScrollArea class="h-full w-full rounded-md border p-3 border-none">
               <div v-html="currentEditorContent" class="EchoContentView echo-editor" />
             </ScrollArea>
-          </ResizablePanel>
-          <ResizableHandle
-            id="block-resizable-handle"
-            class="relative hidden w-3 bg-transparent p-0 after:absolute after:right-0 after:top-1/2 after:h-8 after:w-[6px] after:-translate-y-1/2 after:-translate-x-px after:rounded-full after:bg-border after:transition-all hover:after:h-10 sm:block"
-          />
-          <ResizablePanel id="block-resizable-panel-2" :default-size="0" :min-size="0" />
-        </ResizablePanelGroup>
+          </div>
+        </div>
       </div>
       <DialogFooter class="p-2 pt-0">
         <Button @click="handleClose"> {{ t('editor.close') }} </Button>
