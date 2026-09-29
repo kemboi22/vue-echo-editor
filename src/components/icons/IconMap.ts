@@ -94,7 +94,15 @@ import {
   Omega,
   CodeXml,
   AppWindow,
-} from 'lucide-vue-next'
+  Download,
+  FileCode,
+  FileBraces,
+  FileType,
+  FileDown,
+  Users,
+  Languages,
+  Hash,
+} from '@lucide/vue'
 
 import { ExtraIcons } from './ExtraIcons'
 // 图标映射 - 直接映射到组件
@@ -208,6 +216,15 @@ export const icons = {
   Omega,
   CodeXml,
   Iframe: AppWindow,
+  Download,
+  FileCode,
+  FileBraces,
+  FileType,
+  FileDown,
+  Users,
+  Languages,
+  Hash,
+  FileText,
 } as const
 
 export default icons

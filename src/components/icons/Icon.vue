@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import icons from './IconMap'
 import type { HTMLAttributes } from 'vue'
 import { cn } from '@/lib/utils'
-import { HelpCircle } from 'lucide-vue-next'
+import { HelpCircle } from '@lucide/vue'
 
 const props = defineProps<{
   name: keyof typeof icons

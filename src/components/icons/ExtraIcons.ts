@@ -1,4 +1,4 @@
-import { createLucideIcon } from 'lucide-vue-next'
+import { createLucideIcon } from '@lucide/vue'
 
 export const ExtraIcons = {
   ColumnDelete: createLucideIcon('ColumnDelete', [
