@@ -4,20 +4,19 @@ import type { GeneralOptions } from '@/type'
 import { Extension } from '@tiptap/core'
 export interface PrinterOptions extends GeneralOptions<PrinterOptions> {}
 
-const { togglePrinter, state } = useTiptapStore()
 export const Printer = Extension.create<PrinterOptions>({
   name: 'printer',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as PrinterOptions),
       button: ({ editor, extension, t }) => ({
         component: ActionButton,
         componentProps: {
           tooltip: t('editor.printer.tooltip'),
-          action: () => togglePrinter(),
+          action: () => useTiptapStore(editor).togglePrinter(),
           icon: 'Printer',
           shortcutKeys: ['mod', 'P'],
-          isActive: () => state.printer,
+          isActive: () => useTiptapStore(editor).state.printer,
         },
       }),
     }

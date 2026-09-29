@@ -38,7 +38,7 @@ export const ImportWord = Extension.create<ImportWordOptions>({
   name: 'importWord',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as ImportWordOptions),
       upload: undefined,
       convert: undefined,
       limit: 1024 * 1024 * 10, //10MB
@@ -76,7 +76,7 @@ export const ImportWord = Extension.create<ImportWordOptions>({
               if (uploadOptions && typeof uploadOptions.upload === 'function') {
                 const files: File[] = []
                 // convert base64 image to blob file
-                for (let img of images) {
+                for (const img of images) {
                   const originalSrc = img.getAttribute('src')
                   const blob = base64ToBlob(originalSrc, 'image/jpeg')
                   const file = blobToFile(blob, 'image.jpeg')
@@ -107,7 +107,7 @@ export const ImportWord = Extension.create<ImportWordOptions>({
           }
           async function handleResult(htmlResult: string) {
             const html = await filerImage(htmlResult)
-            editor.chain().setContent(html.toString(), true).run()
+            editor.chain().setContent(html.toString(), { emitUpdate: true }).run()
             toast.success(t.value('editor.importWord.success'))
           }
           const { open, onChange } = useFileDialog({

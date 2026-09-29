@@ -29,7 +29,7 @@ export const Indent = Extension.create<IndentOptions>({
   name: 'indent',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as IndentOptions),
       types: ['paragraph', 'heading', 'blockquote'],
       minIndent: IndentProps.min,
       maxIndent: IndentProps.max,

@@ -62,15 +62,21 @@ const imageRef = ref<HTMLElement | null>(null)
 
 const resizeObserver = new ResizeObserver(entries => {
   for (const entry of entries) {
-    const { width, height } = entry.contentRect
+    const width = Math.round(entry.contentRect.width)
+    const height = Math.round(entry.contentRect.height)
     originalSize.value = { width, height }
+    // Avoid dispatching a transaction (and an undo step) when nothing changed
+    const { originWidth, originHeight } = props.node.attrs
+    if (width === originWidth && height === originHeight) continue
     props.updateAttributes({ originWidth: width, originHeight: height })
   }
 })
 
 function selectImage() {
   const { editor, getPos } = props
-  editor.commands.setNodeSelection(getPos())
+  const pos = getPos()
+  if (typeof pos !== 'number') return
+  editor.commands.setNodeSelection(pos)
 }
 
 const getMaxSize = throttle(() => {
@@ -85,12 +91,9 @@ function onMouseDown(e: MouseEvent, dir: string) {
   const { width: originalWidth, height: originalHeight } = unref(originalSize)
   const aspectRatio = originalWidth / originalHeight
 
-  let width = Number(props.node.attrs.width) || originalWidth
-  let height = Number(props.node.attrs.height) || Math.round(width / aspectRatio)
   const maxWidth = unref(maxSize).width
-
-  width = Math.min(width > maxWidth ? maxWidth : width, maxWidth)
-  height = Math.round(width / aspectRatio)
+  const width = Math.min(Number(props.node.attrs.width) || originalWidth, maxWidth)
+  const height = Math.round(width / aspectRatio)
 
   Object.assign(resizerState.value, { x: e.clientX, y: e.clientY, w: width, h: height, dir })
   resizing.value = true

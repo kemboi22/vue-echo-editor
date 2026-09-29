@@ -1,20 +1,28 @@
-import type { HistoryOptions as TiptapHistoryOptions } from '@tiptap/extension-history'
-import { History as TiptapHistory } from '@tiptap/extension-history'
+import type { UndoRedoOptions as TiptapUndoRedoOptions } from '@tiptap/extensions'
+import { UndoRedo as TiptapUndoRedo } from '@tiptap/extensions'
 
 import ActionButton from '@/components/ActionButton.vue'
 
 import type { GeneralOptions } from '@/type'
 
-export interface HistoryOptions extends TiptapHistoryOptions, GeneralOptions<HistoryOptions> {}
+export interface HistoryOptions extends TiptapUndoRedoOptions, GeneralOptions<HistoryOptions> {}
 
-export const History = TiptapHistory.extend<HistoryOptions>({
+/**
+ * Undo / redo support (Tiptap v3 `UndoRedo`), with toolbar buttons.
+ *
+ * The extension keeps the name `history` for backwards compatibility.
+ * Do not combine it with the `Collaboration` extension, which ships its own undo manager.
+ */
+export const History = TiptapUndoRedo.extend<HistoryOptions>({
+  name: 'history',
+
   addOptions() {
     return {
-      ...this.parent?.(),
-      depth: 10,
+      ...(this.parent?.() as HistoryOptions),
+      depth: 100,
       button: ({ editor, t }) => {
-        const historys: ['undo', 'redo'] = ['undo', 'redo']
-        return historys.map(item => ({
+        const actions = ['undo', 'redo'] as const
+        return actions.map(item => ({
           component: ActionButton,
           componentProps: {
             action: () => {
@@ -31,3 +39,6 @@ export const History = TiptapHistory.extend<HistoryOptions>({
     }
   },
 })
+
+/** Alias matching the Tiptap v3 naming. */
+export const UndoRedo = History

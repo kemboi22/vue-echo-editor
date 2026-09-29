@@ -1,5 +1,5 @@
-import type { BulletListOptions as TiptapBulletListOptions } from '@tiptap/extension-bullet-list'
-import { BulletList as TiptapBulletList } from '@tiptap/extension-bullet-list'
+import type { BulletListOptions as TiptapBulletListOptions } from '@tiptap/extension-list'
+import { BulletList as TiptapBulletList } from '@tiptap/extension-list'
 import BulletListMenuButton from './components/BulletListMenuButton.vue'
 import type { GeneralOptions } from '@/type'
 
@@ -25,7 +25,7 @@ export const BulletList = TiptapBulletList.extend<BulletListOptions>({
   },
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as BulletListOptions),
       button: ({ editor, t }) => ({
         component: BulletListMenuButton,
         componentProps: {

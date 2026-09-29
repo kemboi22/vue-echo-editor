@@ -8,7 +8,14 @@ export interface MenuItem {
   children?: MenuItem[]
 }
 export interface AIOptions extends GeneralOptions<AIOptions> {
-  completions: (history: Array<{ role: string; content: string }>, signal?: AbortSignal) => Promise<any>
+  /**
+   * Returns the model response as an async iterable of chunks: plain strings, OpenAI-style
+   * `choices[0].delta.content` objects or `{ text }` objects.
+   */
+  completions: (
+    history: Array<{ role: string; content: string }>,
+    signal?: AbortSignal
+  ) => AsyncIterable<unknown> | Promise<AsyncIterable<unknown>>
   /**
    * AI Shortcuts Menu
    */
@@ -20,7 +27,7 @@ export const AI = Node.create<AIOptions>({
   group: 'block',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as AIOptions),
       toolbar: false,
       button: ({ editor, t }) => ({
         component: ActionButton,

@@ -9,7 +9,7 @@ export interface BoldOptions extends TiptapImageOptions, GeneralOptions<BoldOpti
 export const Bold = TiptapBold.extend<BoldOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as BoldOptions),
       button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {

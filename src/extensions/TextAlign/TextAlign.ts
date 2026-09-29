@@ -1,6 +1,6 @@
 import type { Editor, Extension } from '@tiptap/core'
 import type { TextAlignOptions as TiptapTextAlignOptions } from '@tiptap/extension-text-align'
-import TiptapTextAlign from '@tiptap/extension-text-align'
+import { TextAlign as TiptapTextAlign } from '@tiptap/extension-text-align'
 import TextAlignMenuButton from './components/TextAlignMenuButton.vue'
 import type { GeneralOptions } from '@/type'
 
@@ -19,7 +19,7 @@ export interface TextAlignOptions extends TiptapTextAlignOptions, GeneralOptions
 export const TextAlign = TiptapTextAlign.extend<TextAlignOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as TextAlignOptions),
       types: ['heading', 'paragraph', 'list_item', 'title'],
       button({ editor, extension, t }: { editor: Editor; extension: Extension; t: (...args: any[]) => string }) {
         const alignments = (extension.options?.alignments as Alignments[]) || []

@@ -52,7 +52,7 @@ export type { LinkOptions } from './Link'
 export { HorizontalRule } from './HorizontalRule'
 export type { HorizontalRuleOptions } from './HorizontalRule'
 
-export { History } from './History'
+export { History, UndoRedo } from './History'
 export type { HistoryOptions } from './History'
 
 export { Fullscreen } from './Fullscreen'
@@ -81,8 +81,7 @@ export type { SetImageAttrsOptions } from './Image'
 export { Video } from './Video/Video'
 export type { VideoOptions } from './Video'
 
-export { Table } from './Table'
-
+export { Table, TableRow, TableCell, TableHeader, TableCellBackground } from './Table'
 export type { TableOptions } from './Table'
 
 export { AI } from './AI'
@@ -122,6 +121,13 @@ export type { PrinterOptions } from './Printer'
 export { Iframe } from './Iframe'
 export type { IframeOptions } from './Iframe'
 
+export type { SlashCommandOptions } from './SlashCommand/SlashCommand'
 export type { Group, Command } from './SlashCommand/types'
+
+export { Markdown } from './Markdown'
+export type { MarkdownOptions } from './Markdown'
+
+export { Export, exportDocument, serialize, jsonToRTF, toPlainText, downloadFile } from './Export'
+export type { ExportOptions, ExportFormat, ExportResult } from './Export'
 
 export { hasExtension } from '@/utils/utils'

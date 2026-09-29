@@ -27,22 +27,27 @@ function handleFile(event) {
     extension => extension.name === 'videoUpload'
   )?.options
   uploadOptions?.upload([file]).then(res => {
-    props.editor
-      .chain()
-      .setVideo({ src: res[0].src, width: '100%' })
-      .deleteRange({ from: props.getPos(), to: props.getPos() })
-      .run()
+    const pos = props.getPos()
+    if (typeof pos === 'number') {
+      props.editor
+        .chain()
+        .setVideo({ src: res[0].src, width: '100%' })
+        .deleteRange({ from: pos, to: pos })
+        .run()
+    }
     loading.value = false
   })
 }
 function handleLink() {
+  const pos = props.getPos()
+  if (typeof pos !== 'number') return
   props.editor
     .chain()
     .setVideo({
       src: link.value,
       width: '100%',
     })
-    .deleteRange({ from: props.getPos(), to: props.getPos() })
+    .deleteRange({ from: pos, to: pos })
     .run()
 }
 function handleDelete() {

@@ -9,7 +9,7 @@ export interface BlockquoteOptions extends TiptapBlockquoteOptions, GeneralOptio
 export const Blockquote = TiptapBlockquote.extend<BlockquoteOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as BlockquoteOptions),
       HTMLAttributes: {
         class: 'blockquote',
       },

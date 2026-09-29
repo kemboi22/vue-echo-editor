@@ -27,7 +27,7 @@ export const Iframe = Node.create<IframeOptions>({
   atom: true,
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as IframeOptions),
       allowFullscreen: true,
       HTMLAttributes: {
         class: 'iframe-wrapper',

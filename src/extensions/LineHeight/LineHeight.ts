@@ -24,7 +24,7 @@ export const LineHeight = Extension.create<LineHeightOptions>({
   name: 'lineHeight',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as LineHeightOptions),
       types: ['paragraph', 'heading', 'list_item', 'todo_item'],
       lineHeights: ['100%', '115%', '150%', '200%', '250%', '300%'],
       defaultHeight: DEFAULT_LINE_HEIGHT,

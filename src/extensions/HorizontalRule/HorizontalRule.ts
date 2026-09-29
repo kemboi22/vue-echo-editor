@@ -20,7 +20,7 @@ export const HorizontalRule = TiptapHorizontalRule.extend<HorizontalRuleOptions>
   },
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as HorizontalRuleOptions),
       button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {

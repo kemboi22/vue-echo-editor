@@ -48,7 +48,7 @@ export const AllEmbedServices = [
 ]
 
 export const getEmbedService = value => {
-  for (var item of AllEmbedServices) {
+  for (const item of AllEmbedServices) {
     if (item.value === value) {
       return item
     }
@@ -215,14 +215,14 @@ function getMatchedUrl(service: string, originalLink: string, result: EmbedResul
 }
 
 function getYoutubeSrc(originalLink, result) {
-  let link = EmbedServiceLink.youtube
-  let url = result.matchedUrl
+  const link = EmbedServiceLink.youtube
+  const url = result.matchedUrl
   result.validLink = true
 
-  let splits = url.split('=')
-  let len = splits.length
+  const splits = url.split('=')
+  const len = splits.length
   if (len > 0) {
-    let id = splits[len - 1]
+    const id = splits[len - 1]
     result.src = `${link.srcPrefix}/${id}`
     result.validId = true
   }
@@ -231,14 +231,14 @@ function getYoutubeSrc(originalLink, result) {
 }
 
 function getYoukuSrc(originalLink, result) {
-  let link = EmbedServiceLink.youku
-  let url = result.matchedUrl
+  const link = EmbedServiceLink.youku
+  const url = result.matchedUrl
 
-  let idRule = link.idRule
-  let regex = new RegExp(idRule)
-  let match = url.match(regex)
+  const idRule = link.idRule
+  const regex = new RegExp(idRule)
+  const match = url.match(regex)
   if (match && match.length > 0) {
-    let id = match[0].substr(3)
+    const id = match[0].substr(3)
 
     result.validId = true
     result.src = `${link.srcPrefix}/${id}`
@@ -250,13 +250,13 @@ function getYoukuSrc(originalLink, result) {
 }
 
 function getBilibiliSrc(originalLink, result) {
-  let link = EmbedServiceLink.bilibili
-  let url = result.matchedUrl
+  const link = EmbedServiceLink.bilibili
+  const url = result.matchedUrl
 
-  let splits = url.split('/')
-  let len = splits.length
+  const splits = url.split('/')
+  const len = splits.length
   if (len > 0) {
-    let id = splits[len - 1]
+    const id = splits[len - 1]
     result.src = `${link.srcPrefix}=${id}`
     result.validId = true
   }
@@ -265,13 +265,13 @@ function getBilibiliSrc(originalLink, result) {
 }
 
 function getQQVideoSrc(originalLink, result) {
-  let link = EmbedServiceLink.qqvideo
-  let url = result.matchedUrl
+  const link = EmbedServiceLink.qqvideo
+  const url = result.matchedUrl
 
-  let splits = url.split('/')
-  let len = splits.length
+  const splits = url.split('/')
+  const len = splits.length
   if (len > 0) {
-    let id = splits[len - 1]
+    const id = splits[len - 1]
     result.src = `${link.srcPrefix}=${id}`
     result.validId = true
   }
@@ -326,7 +326,7 @@ function getLanhuSrc(originalLink: string, result: EmbedResult): EmbedResult {
 }
 
 function getFigmaSrc(originalLink, result) {
-  let link = EmbedServiceLink.figma
+  const link = EmbedServiceLink.figma
   result.src = `${link.srcPrefix}=${encodeURIComponent(result.matchedUrl)}`
   result.validId = true
   result.originalLink = result.matchedUrl
@@ -376,7 +376,7 @@ function getCommonSrc(originalLink, result) {
 
 export function getExampleUrl(service: string) {
   let exampleUrl = ''
-  let link = EmbedServiceLink[service]
+  const link = EmbedServiceLink[service]
   if (link) {
     exampleUrl = link.example
   }

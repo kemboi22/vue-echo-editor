@@ -44,7 +44,7 @@ export const Link = TiptapLink.extend<LinkOptions>({
 
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as LinkOptions),
       openOnClick: true,
       button: ({ editor, t }) => {
         return {

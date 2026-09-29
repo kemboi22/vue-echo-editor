@@ -115,7 +115,7 @@ function setActiveItemRef(groupIndex: number, commandIndex: number, el: any) {
 </script>
 <template>
   <div
-    class="rounded-lg bg-background shadow-xs border max-h-[min(80vh,24rem)] overflow-auto flex-wrap mb-8 p-1"
+    class="rounded-lg bg-background shadow-xs border max-h-[min(60vh,24rem)] overflow-auto flex-wrap p-1"
     ref="scrollContainer"
   >
     <div class="grid grid-cols-1 gap-0.5 min-w-48" v-if="items?.length">

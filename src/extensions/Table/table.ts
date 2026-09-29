@@ -1,13 +1,13 @@
-import TiptapTable from '@tiptap/extension-table'
+import { Table as TiptapTable } from '@tiptap/extension-table'
 
-import { TableRow } from '@tiptap/extension-table-row'
-import type { TableRowOptions } from '@tiptap/extension-table-row'
+import { TableRow } from '@tiptap/extension-table'
+import type { TableRowOptions } from '@tiptap/extension-table'
 
-import { TableCell } from '@tiptap/extension-table-cell'
-import type { TableCellOptions } from '@tiptap/extension-table-cell'
+import { TableCell } from '@tiptap/extension-table'
+import type { TableCellOptions } from '@tiptap/extension-table'
 
-import { TableHeader } from '@tiptap/extension-table-header'
-import type { TableHeaderOptions } from '@tiptap/extension-table-header'
+import { TableHeader } from '@tiptap/extension-table'
+import type { TableHeaderOptions } from '@tiptap/extension-table'
 
 import { TableCellBackground } from './cell-background'
 import type { TableCellBackgroundOptions } from './cell-background'
@@ -35,7 +35,7 @@ export interface TableOptions extends GeneralOptions<TableOptions> {
 export const Table = TiptapTable.extend<TableOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as TableOptions),
       resizable: true,
       lastColumnResizable: true,
       allowTableNodeSelection: false,

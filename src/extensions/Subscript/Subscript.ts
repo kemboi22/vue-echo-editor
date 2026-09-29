@@ -32,7 +32,7 @@ export const SubAndSuperScript = Extension.create<SubAndSuperScriptOptions>({
 
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as SubAndSuperScriptOptions),
       button: ({ editor, extension, t }) => {
         const subscript = extension.options.subscript
         const superscript = extension.options.superscript

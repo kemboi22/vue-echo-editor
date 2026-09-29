@@ -99,54 +99,32 @@
 </template>
 
 <script setup lang="ts">
-import 'prism-code-editor/prism/languages/bash'
-import 'prism-code-editor/prism/languages/css'
-import 'prism-code-editor/prism/languages/css-extras'
-import 'prism-code-editor/prism/languages/markup'
-import 'prism-code-editor/prism/languages/java'
-import 'prism-code-editor/prism/languages/sql'
-import 'prism-code-editor/prism/languages/cpp'
-import 'prism-code-editor/prism/languages/go'
-import 'prism-code-editor/prism/languages/javascript'
-import 'prism-code-editor/prism/languages/js-templates'
-import 'prism-code-editor/prism/languages/jsx'
-import 'prism-code-editor/prism/languages/python'
-import 'prism-code-editor/prism/languages/rust'
-import 'prism-code-editor/prism/languages/clike'
-import 'prism-code-editor/prism/languages/json'
-import 'prism-code-editor/prism/languages/typescript'
-import 'prism-code-editor/prism/languages/tsx'
-import 'prism-code-editor/prism/languages/yaml'
 import 'prism-code-editor/layout.css'
 import './theme.css'
 
 import { nodeViewProps, NodeViewWrapper } from '@tiptap/vue-3'
-import { createEditor, type PrismEditor } from 'prism-code-editor'
-import { defaultCommands, editHistory } from 'prism-code-editor/commands'
-import { cursorPosition } from 'prism-code-editor/cursor'
-
-import { indentGuides } from 'prism-code-editor/guides'
-import { highlightBracketPairs } from 'prism-code-editor/highlight-brackets'
-import { matchBrackets } from 'prism-code-editor/match-brackets'
-import { matchTags } from 'prism-code-editor/match-tags'
+import { createCodeEditor, type PrismEditor } from '@/utils/prism'
+import { debounce } from '@/utils/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLocale } from '@/locales'
 import { useTiptapStore } from '@/hooks'
 import { useTheme } from '@/hooks/useTheme'
 import { Icon } from '@/components/icons'
-import { onMounted, ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, shallowRef, watch, nextTick, onBeforeUnmount } from 'vue'
+import { toast } from 'vue-sonner'
 
 const props = defineProps(nodeViewProps)
 
 const { t } = useLocale()
 
-const containerRef = ref(null)
+const containerRef = ref<HTMLElement | null>(null)
 
-const { state } = useTiptapStore()
+const { state } = useTiptapStore(props.editor)
 const { isDark } = useTheme()
 const code = ref(props.node.attrs.code || props.node.textContent || '')
-let codeEditor = ref<PrismEditor | null>(null)
+const codeEditor = shallowRef<PrismEditor | null>(null)
+let destroyed = false
 
 const languages = [
   { value: 'plaintext', label: 'plaintext' },
@@ -173,10 +151,10 @@ const copyCode = () => {
     navigator.clipboard
       .writeText(code.value)
       .then(() => {
-        console.log('代码已复制到剪贴板')
+        toast.success(t.value('editor.copied'))
       })
       .catch(err => {
-        console.error('复制失败:', err)
+        console.error('Failed to copy code:', err)
       })
   }
 }
@@ -205,10 +183,18 @@ const validateAndUpdateLanguage = (attrs: any) => {
   return validatedAttrs
 }
 
-onMounted(() => {
+// Writing the code back into the document on every keystroke creates a transaction per key;
+// batch the updates instead.
+const syncCode = debounce((value: string) => {
+  if (destroyed || typeof props.getPos() !== 'number') return
+  props.updateAttributes({ code: value })
+}, 150)
+
+onMounted(async () => {
   const attrs = validateAndUpdateLanguage(props.node.attrs)
-  codeEditor.value = createEditor(containerRef.value, {
-    readOnly: state.disabled,
+  if (!containerRef.value) return
+  const instance = await createCodeEditor(containerRef.value, {
+    readOnly: state.disabled || !props.editor.isEditable,
     language: attrs.language || 'plaintext',
     tabSize: attrs.tabSize ?? 2,
     lineNumbers: attrs.lineNumbers ?? true,
@@ -216,18 +202,15 @@ onMounted(() => {
     value: code.value,
     rtl: false,
     onUpdate(value) {
-      props.updateAttributes({ code: value })
+      code.value = value
+      syncCode(value)
     },
   })
-  codeEditor.value.addExtensions(
-    matchBrackets(),
-    matchTags(),
-    indentGuides(),
-    highlightBracketPairs(),
-    cursorPosition(),
-    defaultCommands(),
-    editHistory()
-  )
+  if (destroyed) {
+    instance.remove()
+    return
+  }
+  codeEditor.value = instance
 
   if (props.node.attrs.shouldFocus) {
     nextTick(() => {
@@ -239,6 +222,8 @@ onMounted(() => {
   }
 })
 onBeforeUnmount(() => {
+  syncCode.flush()
+  destroyed = true
   codeEditor.value?.remove()
 })
 

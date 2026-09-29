@@ -10,7 +10,7 @@ export const Clear = Node.create<ClearOptions>({
   name: 'clear',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as ClearOptions),
       button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {

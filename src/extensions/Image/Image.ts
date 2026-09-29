@@ -1,6 +1,6 @@
 import { mergeAttributes } from '@tiptap/core'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
-import TiptapImage from '@tiptap/extension-image'
+import { Image as TiptapImage } from '@tiptap/extension-image'
 import ImageView from './components/ImageView.vue'
 
 export interface SetImageAttrsOptions {
@@ -64,12 +64,6 @@ export const Image = TiptapImage.extend({
           }
         },
       },
-    }
-  },
-
-  addOptions() {
-    return {
-      ...this.parent?.(),
     }
   },
 

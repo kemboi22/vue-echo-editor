@@ -22,7 +22,7 @@ function handleConfirm() {
   if (result.validLink && result.validId) {
     src.value = result.src
   } else {
-    console.log('暂不支持')
+    console.warn('[echo-editor] Unsupported embed link:', originalLink.value)
   }
 }
 function handleExmaple() {

@@ -2,7 +2,6 @@ import { Extension } from '@tiptap/core'
 import ActionButton from '@/components/ActionButton.vue'
 import type { GeneralOptions } from '@/type'
 import { useTiptapStore } from '@/hooks'
-const store = useTiptapStore()
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -18,16 +17,16 @@ export const SpecialCharacter = Extension.create<SpecialCharacterOptions>({
   name: 'specialCharacter',
   addOptions() {
     return {
-      ...this.parent?.(),
-      button: ({ t }) => ({
+      ...(this.parent?.() as SpecialCharacterOptions),
+      button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {
           icon: 'Omega',
           action: () => {
-            store.toggleSpecialCharacter()
+            useTiptapStore(editor).toggleSpecialCharacter()
           },
           tooltip: t('editor.specialCharacter.tooltip'),
-          isActive: () => store.state.specialCharacter,
+          isActive: () => useTiptapStore(editor).state.specialCharacter,
         },
       }),
     }
@@ -37,7 +36,7 @@ export const SpecialCharacter = Extension.create<SpecialCharacterOptions>({
       toggleSpecialCharacter:
         () =>
         ({ editor }) => {
-          store.toggleSpecialCharacter()
+          useTiptapStore(editor).toggleSpecialCharacter()
           return true
         },
       insertSpecialCharacter:

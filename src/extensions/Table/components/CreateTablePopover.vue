@@ -24,10 +24,8 @@ const emit = defineEmits<Emits>()
 
 <template>
   <Popover>
-    <PopoverTrigger as-child>
-      <button :disabled="disabled" class="m-0 p-0">
-        <slot name="trigger" />
-      </button>
+    <PopoverTrigger as-child :disabled="disabled">
+      <slot name="trigger" />
     </PopoverTrigger>
     <PopoverContent class="w-full" align="start" side="bottom">
       <TableGrid @create-table="e => emit('create-table', e)" />

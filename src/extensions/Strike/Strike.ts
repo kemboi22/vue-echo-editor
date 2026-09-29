@@ -8,7 +8,7 @@ export interface StrikeOptions extends TiptapStrikeOptions, GeneralOptions<Strik
 export const Strike = TiptapStrike.extend<StrikeOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as StrikeOptions),
       button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {

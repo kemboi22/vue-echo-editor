@@ -28,7 +28,7 @@ export const MoreMark = Extension.create<MoreMarkOptions>({
   name: 'moreMark',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as MoreMarkOptions),
       button({ editor, extension, t }) {
         const subscript = extension.options.subscript
         const superscript = extension.options.superscript

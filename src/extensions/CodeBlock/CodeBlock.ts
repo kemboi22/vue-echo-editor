@@ -83,8 +83,22 @@ export const CodeBlock = Node.create({
     ]
   },
   renderHTML({ HTMLAttributes, node }) {
-    let code = node.attrs.code || node.content.firstChild?.text || ''
+    const code = node.attrs.code || node.content.firstChild?.text || ''
     return ['pre', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), ['code', {}, code]]
+  },
+  markdownTokenName: 'code',
+  parseMarkdown: token => ({
+    type: 'codeBlock',
+    attrs: {
+      language: token.lang || 'plaintext',
+      code: token.text ?? '',
+      shouldFocus: false,
+    },
+  }),
+  renderMarkdown: node => {
+    const language = node.attrs?.language && node.attrs.language !== 'plaintext' ? node.attrs.language : ''
+    const code = node.attrs?.code || node.content?.map(child => child.text ?? '').join('') || ''
+    return `\`\`\`${language}\n${code}\n\`\`\``
   },
   addNodeView() {
     return VueNodeViewRenderer(NodeView)

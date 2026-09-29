@@ -2,7 +2,6 @@ import { Extension } from '@tiptap/core'
 import ActionButton from '@/components/ActionButton.vue'
 import type { GeneralOptions } from '@/type'
 import { useTiptapStore } from '@/hooks'
-const store = useTiptapStore()
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -17,16 +16,16 @@ export const Preview = Extension.create<PreviewOptions>({
   name: 'preview',
   addOptions() {
     return {
-      ...this.parent?.(),
-      button: ({ t }) => ({
+      ...(this.parent?.() as PreviewOptions),
+      button: ({ editor, t }) => ({
         component: ActionButton,
         componentProps: {
           icon: 'Eye',
           action: () => {
-            store.togglePreview()
+            useTiptapStore(editor).togglePreview()
           },
           tooltip: t('editor.preview.tooltip'),
-          isActive: () => store.state.showPreview,
+          isActive: () => useTiptapStore(editor).state.showPreview,
         },
       }),
     }
@@ -36,7 +35,7 @@ export const Preview = Extension.create<PreviewOptions>({
       togglePreview:
         () =>
         ({ editor }) => {
-          store.togglePreview()
+          useTiptapStore(editor).togglePreview()
           return true
         },
     }

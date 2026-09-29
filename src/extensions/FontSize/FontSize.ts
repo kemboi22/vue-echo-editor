@@ -49,7 +49,7 @@ export const FontSize = Extension.create<FontSizeOptions>({
   name: 'fontSize',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as FontSizeOptions),
       types: ['textStyle'],
       fontSizes: [...DEFAULT_FONT_SIZE_LIST],
       button({ editor, extension, t }) {

@@ -9,7 +9,7 @@ export interface HighlightOptions extends TiptapHighlightOptions, GeneralOptions
 export const Highlight = TiptapHighlight.extend<HighlightOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as HighlightOptions),
       multicolor: true,
       button: ({ editor, t }) => ({
         component: HighlightActionButton,

@@ -1,6 +1,6 @@
 import { type Editor } from '@tiptap/core'
 import type { ItalicOptions as TiptapItalicOptions } from '@tiptap/extension-italic'
-import TiptapItalic from '@tiptap/extension-italic'
+import { Italic as TiptapItalic } from '@tiptap/extension-italic'
 import ActionButton from '@/components/ActionButton.vue'
 import type { GeneralOptions } from '@/type'
 
@@ -9,7 +9,7 @@ export interface ItalicOptions extends TiptapItalicOptions, GeneralOptions<Itali
 export const Italic = TiptapItalic.extend<ItalicOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as ItalicOptions),
       button({ editor, t }: { editor: Editor; t: (...args: any[]) => string }) {
         return {
           component: ActionButton,

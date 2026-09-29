@@ -33,7 +33,7 @@ export const Columns = Node.create<ColumnsOptions>({
   isolating: true,
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as ColumnsOptions),
       layout: ColumnLayout.TwoColumn,
     }
   },

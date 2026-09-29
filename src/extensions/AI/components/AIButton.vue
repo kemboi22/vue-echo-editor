@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
   isActive: undefined,
 })
 
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 
 function handleOpen() {
   const completionsFunc = props.editor.extensionManager.extensions.find(e => e.name === 'AI')?.options?.completions

@@ -32,13 +32,17 @@ function handleFile(event) {
     },
     onUpload: uploadOptions.upload,
   })
-  uploadFn([file], props.editor.view, props.getPos())
+  const pos = props.getPos()
+  if (typeof pos !== 'number') return
+  uploadFn([file], props.editor.view, pos)
 }
 function handleLink() {
+  const pos = props.getPos()
+  if (typeof pos !== 'number') return
   props.editor
     .chain()
     .setImage({ src: link.value })
-    .deleteRange({ from: props.getPos(), to: props.getPos() })
+    .deleteRange({ from: pos, to: pos })
     .focus()
     .run()
 }

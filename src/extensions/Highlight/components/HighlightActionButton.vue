@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const selectedColor = ref<string | undefined>(undefined)
-const { state } = useTiptapStore()!
+const { state } = useTiptapStore(props.editor)
 
 function onChange(color: string | undefined) {
   props.action?.(color)
@@ -84,6 +84,8 @@ watchEffect(() => {
         variant="ghost"
         size="icon"
         class="w-3 h-[32px] rounded-l-none hover:bg-muted-foreground/20"
+        :aria-label="tooltip"
+        aria-haspopup="dialog"
         :disabled="disabled"
       >
         <Icon class="w-3 h-3 text-zinc-500" name="MenuDown" />

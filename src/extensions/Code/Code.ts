@@ -10,7 +10,7 @@ export interface CodeOptions extends TiptapCodeOptions, GeneralOptions<CodeOptio
 export const Code = TiptapCode.extend<CodeOptions>({
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as CodeOptions),
       toolbar: false,
       button: ({ editor, t }) => ({
         component: ActionButton,

@@ -10,7 +10,7 @@ export const TextBubble = Extension.create<TextBubbleOptions>({
   name: 'text-bubble',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as TextBubbleOptions),
       toolbar: false,
       button: () => ({
         component: TextDropdown,

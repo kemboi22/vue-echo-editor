@@ -1,5 +1,5 @@
-import type { OrderedListOptions as TiptapOrderedListOptions } from '@tiptap/extension-ordered-list'
-import { OrderedList as TiptapOrderedList } from '@tiptap/extension-ordered-list'
+import type { OrderedListOptions as TiptapOrderedListOptions } from '@tiptap/extension-list'
+import { OrderedList as TiptapOrderedList } from '@tiptap/extension-list'
 
 import OrderedListMenuButton from './components/OrderedListMenuButton.vue'
 
@@ -13,9 +13,7 @@ export const OrderedList = TiptapOrderedList.extend<OrderedListOptions>({
       ...this.parent?.(),
       listType: {
         default: 'decimal',
-        parseHTML: (element: HTMLElement) => {
-          element.style.getPropertyValue('list-style-type') || 'decimal'
-        },
+        parseHTML: (element: HTMLElement) => element.style.getPropertyValue('list-style-type') || 'decimal',
         renderHTML: ({ listType }) => {
           return {
             style: `list-style-type: ${listType}`,
@@ -26,7 +24,7 @@ export const OrderedList = TiptapOrderedList.extend<OrderedListOptions>({
   },
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as OrderedListOptions),
       button: ({ editor, t }) => ({
         component: OrderedListMenuButton,
         componentProps: {

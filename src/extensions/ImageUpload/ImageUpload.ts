@@ -69,7 +69,7 @@ export const ImageUpload = Node.create<ImageUploadOptions>({
   addOptions() {
     return {
       ...DEFAULT_OPTIONS,
-      ...this.parent?.(),
+      ...(this.parent?.() as ImageUploadOptions),
       upload: () => Promise.reject('Image Upload Function'),
       button: ({ editor, extension, t }: { editor: any; extension: any; t: (key: string) => string }) => ({
         component: ActionButton,

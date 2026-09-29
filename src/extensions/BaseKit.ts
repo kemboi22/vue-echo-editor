@@ -1,21 +1,21 @@
 import type { AnyExtension } from '@tiptap/core'
 import { Extension } from '@tiptap/core'
-import type { CharacterCountOptions } from '@tiptap/extension-character-count'
-import { CharacterCount } from '@tiptap/extension-character-count'
+import type { CharacterCountOptions } from '@tiptap/extensions'
+import { CharacterCount } from '@tiptap/extensions'
 import { Document } from './Document'
-import type { DropcursorOptions } from '@tiptap/extension-dropcursor'
-import { Dropcursor } from '@tiptap/extension-dropcursor'
-import type { FocusOptions } from '@tiptap/extension-focus'
-import Focus from '@tiptap/extension-focus'
-import { Gapcursor } from '@tiptap/extension-gapcursor'
+import type { DropcursorOptions } from '@tiptap/extensions'
+import { Dropcursor } from '@tiptap/extensions'
+import type { FocusOptions } from '@tiptap/extensions'
+import { Focus } from '@tiptap/extensions'
+import { Gapcursor } from '@tiptap/extensions'
 import type { HardBreakOptions } from '@tiptap/extension-hard-break'
 import { HardBreak } from '@tiptap/extension-hard-break'
-import type { ListItemOptions } from '@tiptap/extension-list-item'
-import { ListItem } from '@tiptap/extension-list-item'
+import type { ListItemOptions } from '@tiptap/extension-list'
+import { ListItem } from '@tiptap/extension-list'
 import type { ParagraphOptions } from '@tiptap/extension-paragraph'
 import { Paragraph } from '@tiptap/extension-paragraph'
-import type { PlaceholderOptions } from '@tiptap/extension-placeholder'
-import { Placeholder } from '@tiptap/extension-placeholder'
+import type { PlaceholderOptions } from '@tiptap/extensions'
+import { Placeholder } from '@tiptap/extensions'
 import { Text } from '@tiptap/extension-text'
 import type { TextStyleOptions } from '@tiptap/extension-text-style'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -149,7 +149,7 @@ export const BaseKit = Extension.create<BaseKitOptions>({
   name: 'base-kit',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as BaseKitOptions),
       bubble: {
         list: NODE_TYPE_MENU,
         defaultBubbleList,

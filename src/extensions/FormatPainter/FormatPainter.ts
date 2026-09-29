@@ -31,7 +31,7 @@ export const FormatPainter = Extension.create<FormatPainterOptions>({
   name: 'painter',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as FormatPainterOptions),
       button: ({ editor, extension, t }) => ({
         component: ActionButton,
         componentProps: {
@@ -93,15 +93,16 @@ export const FormatPainter = Extension.create<FormatPainterOptions>({
               const mouseup = () => {
                 document.removeEventListener('mouseup', mouseup)
 
-                let {
+                const {
                   dispatch,
-                  state: { tr, selection },
+                  state: { selection },
                   dom,
                 } = view
+                let { tr } = view.state
                 dom.style.cursor = ''
 
                 tr = tr.removeMark(selection.from, selection.to)
-                for (let mark of marks) {
+                for (const mark of marks) {
                   if (mark.type.name != 'link') {
                     tr = tr.addMark(selection.from, selection.to, mark)
                   }

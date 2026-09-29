@@ -34,7 +34,7 @@ function onSetLink(link: string, text?: string, openInNewTab?: boolean) {
 
 <template>
   <Popover>
-    <PopoverTrigger :disabled="disabled">
+    <PopoverTrigger :disabled="disabled" as-child>
       <ActionButton :icon="icon" :tooltip="tooltip" :is-active="isActive" :disabled="disabled" />
     </PopoverTrigger>
     <PopoverContent hide-when-detached as-child class="w-full" align="start" side="bottom">

@@ -7,7 +7,6 @@ import ActionButton from '@/components/ActionButton.vue'
 import { useTiptapStore } from '@/hooks'
 import type { GeneralOptions } from '@/type'
 
-const store = useTiptapStore()
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     search: {
@@ -215,12 +214,18 @@ export interface FindAndReplaceStorage {
   resultIndex: number
   lastResultIndex: number
 }
+declare module '@tiptap/core' {
+  interface Storage {
+    findAndReplace: FindAndReplaceStorage
+  }
+}
+
 // origin repo https://github.com/sereneinserenade/tiptap-search-and-replace/blob/main/src/findAndReplace.ts
 export const FindAndReplace = Extension.create<FindAndReplaceOptions, FindAndReplaceStorage>({
   name: 'findAndReplace',
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as FindAndReplaceOptions),
       searchResultClass: 'echo-editor-search-result',
       disableRegex: true,
       button: ({ editor, extension, t }) => ({
@@ -230,9 +235,9 @@ export const FindAndReplace = Extension.create<FindAndReplaceOptions, FindAndRep
           tooltip: t('editor.findAndReplace.tooltip'),
           shortcutKeys: ['mod', 'F'],
           action: () => {
-            store.toggleFindAndReplace()
+            useTiptapStore(editor).toggleFindAndReplace()
           },
-          isActive: () => store.state.findAndReplace,
+          isActive: () => useTiptapStore(editor).state.findAndReplace,
         },
       }),
     }

@@ -38,17 +38,14 @@ function createTable(options: CreateTablePayload) {
 <template>
   <CreateTablePopover @create-table="createTable" :disabled="disabled">
     <template #trigger>
-      <div style="display: flex">
-        <ActionButton
-          :icon="icon"
-          :tooltip="tooltip"
-          :disabled="disabled"
-          :color="color"
-          :action="action"
-          :is-active="isActive"
-        >
-        </ActionButton>
-      </div>
+      <ActionButton
+        :icon="icon"
+        :tooltip="tooltip"
+        :disabled="disabled"
+        :color="color"
+        :action="action"
+        :is-active="isActive"
+      />
     </template>
   </CreateTablePopover>
 </template>

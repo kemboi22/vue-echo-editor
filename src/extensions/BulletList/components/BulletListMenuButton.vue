@@ -59,7 +59,7 @@ function toggleBulletList(item: BulletListOption): void {
   >
     <TooltipProvider>
       <Tooltip :delay-duration="0" v-for="item in BulletListOptions" :key="item.value">
-        <TooltipTrigger>
+        <TooltipTrigger as-child>
           <MenuItem class="p-0" @click="toggleBulletList(item)">
             <div
               :class="[active === item.value ? 'bg-accent border border-accent-foreground' : '']"
