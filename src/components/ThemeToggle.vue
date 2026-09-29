@@ -17,11 +17,19 @@ const { theme, borderRadius, isDark } = useTheme()
 </script>
 
 <template>
-  <div class="flex items-center gap-1">
+  <div class="echo-editor-ui flex items-center gap-1">
     <!-- 主题色选择器 -->
     <ThemePicker v-if="showTheme" v-model="theme" v-model:borderRadius="borderRadius" :disabled="disabled" />
 
-    <Button v-if="isDark" variant="ghost" size="icon" class="w-8 h-8" :disabled="disabled" @click="isDark = false">
+    <Button
+      v-if="isDark"
+      variant="ghost"
+      size="icon"
+      class="w-8 h-8"
+      aria-label="Switch to light mode"
+      :disabled="disabled"
+      @click="isDark = false"
+    >
       <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" class="w-4 h-4 text-foreground">
         <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
           <circle cx="12" cy="12" r="4"></circle>
@@ -31,7 +39,15 @@ const { theme, borderRadius, isDark } = useTheme()
         </g>
       </svg>
     </Button>
-    <Button v-else variant="ghost" size="icon" class="w-8 h-8" :disabled="disabled" @click="isDark = true">
+    <Button
+      v-else
+      variant="ghost"
+      size="icon"
+      class="w-8 h-8"
+      aria-label="Switch to dark mode"
+      :disabled="disabled"
+      @click="isDark = true"
+    >
       <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" class="w-4 h-4 text-foreground">
         <path
           fill="none"

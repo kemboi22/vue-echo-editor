@@ -44,11 +44,13 @@ const props = withDefaults(defineProps<Props>(), {
     >
     </ActionButton>
     <Popover>
-      <PopoverTrigger :disabled="disabled">
+      <PopoverTrigger :disabled="disabled" as-child>
         <Button
           variant="ghost"
           size="icon"
           class="h-[32px] w-3 rounded-l-none hover:bg-muted-foreground/20"
+          :aria-label="tooltip"
+          aria-haspopup="dialog"
           :disabled="disabled"
         >
           <Icon class="w-3 h-3 text-zinc-500" name="MenuDown" />

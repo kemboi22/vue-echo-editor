@@ -23,6 +23,9 @@ interface Props {
   editor?: Editor
   class?: HTMLAttributes['class']
 }
+// The root is a renderless tooltip provider, so forward attrs (e.g. from a PopoverTrigger `as-child`) to the button
+defineOptions({ inheritAttrs: false })
+
 withDefaults(defineProps<Props>(), {
   icon: undefined,
   title: undefined,
@@ -41,19 +44,23 @@ withDefaults(defineProps<Props>(), {
 <template>
   <TooltipProvider>
     <Tooltip :delay-duration="0">
-      <TooltipTrigger>
+      <TooltipTrigger as-child>
         <Toggle
+          v-bind="$attrs"
           size="sm"
-          class="h-[32px]"
+          class="h-[32px] echo-action-button"
           :model-value="isActive?.() || false"
           :disabled="disabled"
+          :aria-label="tooltip || title"
+          :aria-keyshortcuts="shortcutKeys?.length ? shortcutKeys.join('+') : undefined"
+          :aria-busy="loading || undefined"
           :class="[customClass, title ? 'w-auto' : 'w-[32px]']"
           @click="action"
         >
-          <div v-if="loading">
+          <div v-if="loading" aria-hidden="true">
             <Icon class="animate-spin" name="LoaderCircle" />
           </div>
-          <div class="flex gap-1 items-center" v-else>
+          <div class="flex gap-1 items-center" aria-hidden="true" v-else>
             <Icon v-if="icon" :name="icon" />
             <slot name="icon"></slot>
           </div>

@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:modelValue', 'find', 'replace'])
 const inputRef = ref<HTMLInputElement | null>(null)
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 const searchTerm = ref<string>('')
 const replaceTerm = ref<string>('')
 const caseSensitive = ref<boolean>(false)
@@ -47,9 +47,8 @@ const updateSearchReplace = (clearIndex: boolean = false) => {
 const goToSelection = () => {
   if (!props.editor) return
   const { results, resultIndex } = props.editor.storage.findAndReplace
-  const position: number | Range = results[resultIndex]
+  const position = results[resultIndex]
   if (!position) return
-  //@ts-ignore
   props.editor.commands.setTextSelection(position)
   const { node } = props.editor.view.domAtPos(props.editor.state.selection.anchor)
   node instanceof HTMLElement && node.scrollIntoView({ behavior: 'smooth', block: 'center' })

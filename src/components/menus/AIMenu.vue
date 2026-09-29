@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch, nextTick } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import { BubbleMenu } from '@tiptap/vue-3'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
+import { PluginKey } from '@tiptap/pm/state'
+import { DOMSerializer } from '@tiptap/pm/model'
 import { useLocale } from '@/locales'
 import { useHotkeys, useTiptapStore } from '@/hooks'
 import { Input } from '@/components/ui/input'
@@ -10,11 +12,10 @@ import AiCompletion from './components/AiCompletion.vue'
 import { useFocus } from '@vueuse/core'
 import { Icon } from '@/components/icons'
 import Menu from '../ui/menu.vue'
-import { DOMSerializer } from 'prosemirror-model'
 import { useAIConversation } from '@/hooks/useAIConversation'
 import { DEFAULT_SHORTCUTS } from '@/extensions/AI/constants'
-import type { Props as TippyProps } from 'tippy.js'
 import { toast } from 'vue-sonner'
+import { createBubbleMenuOptions } from './floating'
 
 interface Props {
   editor: Editor
@@ -25,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
 
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 const prompt = ref<string>('')
 const cachedPrompt = ref<CachedPrompt | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -33,7 +34,6 @@ const { focused } = useFocus(inputRef)
 const resultContainer = ref<HTMLDivElement | null>(null)
 const { t } = useLocale()
 const isShaking = ref<boolean>(false)
-const tippyInstance = ref<any>(null)
 const menuRef = ref()
 
 const { result, status, handleCompletion, resetConversation, stopGeneration } = useAIConversation(props.editor)
@@ -94,11 +94,10 @@ async function handleGenerate() {
     const selectionText = getSelectionText(props.editor)
 
     if (!selectionText.trim()) {
-      toast({
-        title: t.value('editor.AI.error'),
+      toast.error(t.value('editor.AI.error'), {
         description: t.value('editor.AI.noSelection'),
-        variant: 'destructive',
       })
+      status.value = 'init'
       return
     }
 
@@ -122,13 +121,14 @@ const { bind, unbind } = useHotkeys('esc', () => {
   handleClose()
 })
 
-const tippyOptions = reactive<Partial<TippyProps>>({
-  maxWidth: 600,
-  zIndex: 99,
-  appendTo: 'parent',
+const aiMenuPluginKey = new PluginKey('echoAIMenu')
+
+const options = createBubbleMenuOptions(props.editor, {
   placement: 'bottom-start',
-  onShow(instance) {
-    tippyInstance.value = instance
+  offset: 8,
+  flip: true,
+  shift: { padding: 8 },
+  onShow() {
     bind()
     setTimeout(() => {
       focused.value = true
@@ -136,23 +136,28 @@ const tippyOptions = reactive<Partial<TippyProps>>({
   },
   onHide() {
     unbind()
-    handleClose()
+    if (store.state.AIMenu) handleClose()
   },
   onDestroy() {
-    tippyInstance.value = null
     unbind()
   },
 })
 
-const shouldShow: any = computed(() => {
-  return store?.state.AIMenu
+const shouldShow = computed(() => store.state.AIMenu)
+
+const shouldShowMenu = () => store.state.AIMenu
+
+// The AI menu is opened from the toolbar, not by a selection change, so toggle it explicitly
+watch(shouldShow, visible => {
+  if (props.editor.isDestroyed) return
+  props.editor.view.dispatch(props.editor.state.tr.setMeta(aiMenuPluginKey, visible ? 'show' : 'hide'))
 })
 
 function handleClose() {
   prompt.value = ''
   cachedPrompt.value = null
   resetConversation()
-  store!.state.AIMenu = false
+  store.state.AIMenu = false
 }
 
 function handleReGenerate() {
@@ -234,7 +239,7 @@ function shortcutClick(item: MenuItem) {
 
 const shortcutMenus = computed<ShortcutItem[]>(() => {
   const shortcuts = props.editor?.extensionManager.extensions.find(e => e.name === 'AI')?.options?.shortcuts
-  const mergedShortcuts = [...DEFAULT_SHORTCUTS, ...shortcuts]
+  const mergedShortcuts = [...DEFAULT_SHORTCUTS, ...(shortcuts ?? [])]
 
   // 对菜单项进行本地化处理
   return mergedShortcuts.map(item => ({
@@ -261,7 +266,14 @@ function handleKey(e) {
     v-show="shouldShow"
     @click="handleOverlayClick"
   >
-    <BubbleMenu pluginKey="AIMenu" :update-delay="0" v-show="shouldShow" :editor="editor" :tippy-options="tippyOptions">
+    <BubbleMenu
+      :plugin-key="aiMenuPluginKey"
+      :update-delay="0"
+      :should-show="shouldShowMenu"
+      :editor="editor"
+      :options="options"
+      class="z-50"
+    >
       <div @keydown="handleKey" class="relative w-[450px] z-99" :class="{ 'shake-animation': isShaking }">
         <div
           class="border rounded-xs shadow-xs bg-background"
@@ -279,7 +291,7 @@ function handleKey(e) {
           </div>
         </div>
         <form
-          @submit="handleGenerate"
+          @submit.prevent="handleGenerate"
           class="relative w-full items-center flex bg-background mt-3 rounded-md shadow-xs"
         >
           <div
@@ -293,23 +305,26 @@ function handleKey(e) {
             ref="inputRef"
             v-else
             :placeholder="t('editor.AI.placeholder')"
+            :aria-label="t('editor.AI.placeholder')"
             class="pl-10 pr-20 h-12 outline-hidden ring-0 focus-visible:ring-0"
           />
-          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2" aria-hidden="true">
             <Icon name="Sparkles" class="w-5 h-5" />
           </span>
           <Button
             variant="secondary"
             class="absolute end-0 inset-y-0 flex items-center justify-center px-2 h-[32px] m-2"
             v-if="status === 'generating'"
-            @click="handleClose"
+            type="button"
+            @click="stopGeneration(); handleClose()"
           >
             {{ t('editor.AI.stop') }}
           </Button>
           <Button
             :disabled="!prompt"
             v-else
-            @click="handleGenerate"
+            type="submit"
+            :aria-label="t('editor.AI.generate')"
             class="absolute end-0 inset-y-0 flex items-center justify-center px-2 w-[32px] h-[32px] m-2 rounded-full"
           >
             <Icon name="ArrowUp" class="w-5 h-5 font-bold" />

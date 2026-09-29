@@ -47,7 +47,7 @@ const { t } = useLocale()
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 
 // 获取当前编辑器加载的扩展名
 const activeExtensions = computed(() => props.editor.extensionManager.extensions.map(ext => ext.name))
@@ -109,7 +109,7 @@ const saveDraft = () => {
 const restoreDraft = () => {
   const content = localStorage.getItem(DRAFT_KEY)
   if (content) {
-    props.editor?.chain().setContent(content, true).focus().run()
+    props.editor?.chain().setContent(content, { emitUpdate: true }).focus().run()
   }
 }
 const clearEditor = () => {

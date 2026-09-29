@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
 const { t } = useLocale()
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 const currentSize = ref('100')
 
 function openChange(e: boolean) {

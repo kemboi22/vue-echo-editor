@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import { BubbleMenu } from '@tiptap/vue-3'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
 import LinkEditBlock from '@/extensions/Link/components/LinkEditBlock.vue'
 import LinkViewBlock from '@/extensions/Link/components/LinkViewBlock.vue'
 import { TextSelection } from '@tiptap/pm/state'
+import { createBubbleMenuOptions } from './floating'
+import type { BubbleMenuShouldShow } from './floating'
 
 interface Props {
   editor: Editor
@@ -20,9 +22,16 @@ const link = computed(() => {
   const { href: link } = props.editor.getAttributes('link')
   return link
 })
-const shouldShow: any = computed(() => {
-  const isActive = props.editor.isActive('link')
-  return isActive
+const shouldShow: BubbleMenuShouldShow = ({ editor }) => editor.isEditable && editor.isActive('link')
+
+const options = createBubbleMenuOptions(props.editor, {
+  placement: 'bottom-start',
+  offset: 8,
+  flip: false,
+  shift: { padding: 8 },
+  onHide: () => {
+    showEdit.value = false
+  },
 })
 
 function onSetLink(url: string, text?: string, openInNewTab?: boolean) {
@@ -63,20 +72,11 @@ function onClickOutside() {
 <template>
   <BubbleMenu
     :editor="editor"
-    v-show="shouldShow"
+    plugin-key="echoLinkMenu"
+    :should-show="shouldShow"
     :update-delay="0"
-    :tippy-options="{
-      popperOptions: {
-        modifiers: [{ name: 'flip', enabled: false }],
-      },
-      appendTo: 'parent',
-      placement: 'bottom-start',
-      offset: [-2, 16],
-      zIndex: 99,
-      onHidden: () => {
-        showEdit = false
-      },
-    }"
+    :options="options"
+    class="z-50"
   >
     <LinkEditBlock @onSetLink="onSetLink" @on-click-outside="onClickOutside" :editor="editor" v-if="showEdit" />
     <LinkViewBlock :editor="editor" @clear="unSetLink" @edit="showEdit = true" :link="link" v-else />

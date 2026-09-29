@@ -47,9 +47,9 @@ function reset() {
 
 <template>
   <Popover>
-    <PopoverTrigger :disabled="disabled">
+    <PopoverTrigger :disabled="disabled" as-child>
       <slot>
-        <Button variant="ghost" size="icon" class="w-8 h-8" :disabled="disabled">
+        <Button variant="ghost" size="icon" class="echo-editor-ui w-8 h-8" aria-label="Theme colour" :disabled="disabled">
           <Icon name="Paintbrush" class="w-4 h-4" />
         </Button>
       </slot>

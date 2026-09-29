@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { sticky } from 'tippy.js'
 import type { Editor } from '@tiptap/vue-3'
-import { BubbleMenu, isActive } from '@tiptap/vue-3'
+import { isActive } from '@tiptap/core'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
+import { createBubbleMenuOptions, createVirtualElementGetter } from './floating'
+import type { BubbleMenuShouldShow } from './floating'
 import ActionButton from '@/components/ActionButton.vue'
 import { ColumnLayout } from '@/extensions/MultiColumn'
 import { getRenderContainer } from '@/utils/getRenderContainer'
@@ -17,16 +19,17 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const { t } = useLocale()
 
-const shouldShow = ({ editor }) => {
-  return isActive(editor.view.state, 'columns')
-}
-// 获取参考元素的位置
-const getReferenceClientRect = () => {
-  const renderContainer = getRenderContainer(props.editor, 'columns')
-  const rect = renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
+const shouldShow: BubbleMenuShouldShow = ({ editor }) => editor.isEditable && isActive(editor.state, 'columns')
 
-  return rect
-}
+// Anchor the menu to the columns block instead of the text selection
+const getReferencedVirtualElement = createVirtualElementGetter(() => getRenderContainer(props.editor, 'columns'))
+
+const options = createBubbleMenuOptions(props.editor, {
+  placement: 'top',
+  offset: 8,
+  flip: true,
+  shift: { padding: 8 },
+})
 
 const onDelete = () => {
   props.editor.chain().focus().deleteNode('columns').run()
@@ -36,15 +39,12 @@ const onDelete = () => {
 <template>
   <BubbleMenu
     :editor="editor"
-    pluginKey="columns"
-    :shouldShow="shouldShow"
-    :updateDelay="0"
-    :tippy-options="{
-      offset: [0, 8],
-      getReferenceClientRect,
-      plugins: [sticky],
-      sticky: 'popper',
-    }"
+    plugin-key="echoColumnsMenu"
+    :should-show="shouldShow"
+    :update-delay="0"
+    :options="options"
+    :get-referenced-virtual-element="getReferencedVirtualElement"
+    class="z-20"
   >
     <div class="p-2 bg-background rounded-lg shadow-xs border">
       <div class="flex gap-1 items-center">

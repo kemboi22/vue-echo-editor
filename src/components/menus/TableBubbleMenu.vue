@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
-import { BubbleMenu, isActive } from '@tiptap/vue-3'
+import { isActive } from '@tiptap/core'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
 import { useLocale } from '@/locales'
 import ActionButton from '@/components/ActionButton.vue'
-import { sticky } from 'tippy.js'
-import type { GetReferenceClientRect } from 'tippy.js'
+import { createBubbleMenuOptions, createVirtualElementGetter } from './floating'
+import type { BubbleMenuShouldShow } from './floating'
 import HighlightActionButton from '@/extensions/Highlight/components/HighlightActionButton.vue'
 import { Separator } from '@/components/ui/separator'
 
@@ -13,9 +14,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {})
 
-const shouldShow = ({ editor }) => {
-  return isActive(editor.view.state, 'table')
-}
+const shouldShow: BubbleMenuShouldShow = ({ editor }) => editor.isEditable && isActive(editor.state, 'table')
 const { t } = useLocale()
 
 function onAddColumnBefore() {
@@ -54,43 +53,35 @@ function onDeleteTable() {
 function onSetCellBackground(color: string) {
   props.editor.chain().focus().setTableCellBackground(color).run()
 }
-const getReferenceClientRect: GetReferenceClientRect = () => {
-  const {
-    view,
-    state: {
-      selection: { from },
-    },
-  } = props.editor
+// Anchor the menu to the whole table instead of the text selection
+const getReferencedVirtualElement = createVirtualElementGetter(() => {
+  const { view, state } = props.editor
+  const { node } = view.domAtPos(state.selection.from)
+  const element = (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement) as HTMLElement | null
+  return element?.closest('.tableWrapper')
+})
 
-  // 获取当前选中的表格节点
-  const node = view.domAtPos(from).node as HTMLElement
-  if (!node) return new DOMRect(-1000, -1000, 0, 0)
-  // 获取表格元素
-  const tableWrapper = node?.closest('.tableWrapper')
-  if (!tableWrapper) return new DOMRect(-1000, -1000, 0, 0)
-
-  // 获取表格的位置信息
-  const rect = tableWrapper.getBoundingClientRect()
-  // 返回一个新的 DOMRect，将 bubble menu 定位在表格的上方
-  return rect
-}
+const options = createBubbleMenuOptions(props.editor, {
+  placement: 'top',
+  offset: 8,
+  flip: true,
+  shift: { padding: 8 },
+})
 </script>
 <template>
   <BubbleMenu
     :editor="editor"
-    pluginKey="table"
-    :shouldShow="shouldShow"
-    :updateDelay="0"
-    :tippy-options="{
-      offset: [0, 8],
-      maxWidth: 'auto',
-      getReferenceClientRect,
-      plugins: [sticky],
-      sticky: 'popper',
-    }"
+    plugin-key="echoTableMenu"
+    :should-show="shouldShow"
+    :update-delay="0"
+    :options="options"
+    :get-referenced-virtual-element="getReferencedVirtualElement"
+    class="z-20"
   >
     <div
       class="min-w-32 flex flex-row h-full items-center leading-none gap-0.5 p-2 w-full bg-background rounded-lg shadow-xs border border-border"
+      role="toolbar"
+      :aria-label="t('editor.table.tooltip')"
     >
       <ActionButton
         icon="BetweenHorizonalEnd"

@@ -3,9 +3,9 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Icon } from '@/components/icons'
 import { DragHandlePlugin } from '@/plugins/DragHandle'
 import { Button } from '@/components/ui/button'
-import { Node } from '@tiptap/pm/model'
+import type { Node } from '@tiptap/pm/model'
 import type { Editor } from '@tiptap/vue-3'
-import { NodeSelection, Plugin, PluginKey } from '@tiptap/pm/state'
+import type { NodeSelection, Plugin, PluginKey } from '@tiptap/pm/state'
 import { useLocale } from '@/locales'
 import {
   DropdownMenu,
@@ -55,11 +55,6 @@ onMounted(() => {
       editor: props.editor,
       element: dragElement.value,
       pluginKey: props.pluginKey,
-      tippyOptions: {
-        offset: [-2, 16],
-        zIndex: 9,
-        moveTransition: 'transform 0.15s ease-out',
-      },
       onNodeChange: handleNodeChange,
     })
 
@@ -113,7 +108,7 @@ function deleteNode() {
   props.editor.chain().setMeta('hideDragHandle', true).setNodeSelection(currentNodePos.value).deleteSelection().run()
 }
 
-function handleNodeChange(e) {
+function handleNodeChange(e: { node: Node | null; pos: number }) {
   if (e.node) {
     currentNode.value = e.node
   }
@@ -190,15 +185,22 @@ watch(
         size="icon"
         class="w-7 h-7 cursor-grab rounded-xs"
         :disabled="disabled"
+        :aria-label="t('editor.slash')"
       >
         <Icon name="Plus" class="text-lg" />
       </Button>
       <DropdownMenu v-model:open="menuOpen">
-        <DropdownMenuTrigger :disable="disabled">
+        <DropdownMenuTrigger :disabled="disabled" as-child>
           <TooltipProvider :delay-duration="0">
             <Tooltip>
               <TooltipTrigger as-child>
-                <Button variant="ghost" size="icon" class="w-6 h-7 cursor-grab rounded-xs" :disabled="disabled">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="w-6 h-7 cursor-grab rounded-xs"
+                  :disabled="disabled"
+                  :aria-label="t('editor.draghandle.tooltip')"
+                >
                   <Icon name="Grip" class="text-sm" />
                 </Button>
               </TooltipTrigger>

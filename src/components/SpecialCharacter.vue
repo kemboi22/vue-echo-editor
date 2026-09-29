@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useLocale()
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 const searchTerm = ref('')
 const activeTab = ref('all')
 
@@ -122,7 +122,7 @@ watch(
               <TooltipProvider :delay-duration="0">
                 <div class="grid grid-cols-8 md:grid-cols-12 lg:grid-cols-16 gap-2">
                   <Tooltip :key="char.code" v-for="char in currentCharacters">
-                    <TooltipTrigger>
+                    <TooltipTrigger as-child>
                       <button
                         @click="handleCharacterClick(char)"
                         class="w-10 h-10 border rounded-md flex items-center justify-center hover:bg-accent hover:border-accent-foreground transition-colors"
@@ -171,11 +171,11 @@ watch(
 }
 
 :deep(.scrollbar-thumb) {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
   border-radius: 3px;
 }
 
 :deep(.scrollbar-thumb:hover) {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
 }
 </style>

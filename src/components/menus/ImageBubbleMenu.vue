@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import { BubbleMenu, isActive } from '@tiptap/vue-3'
-import { sticky } from 'tippy.js'
+import { isActive } from '@tiptap/core'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
+import { createBubbleMenuOptions, createVirtualElementGetter } from './floating'
+import type { BubbleMenuShouldShow } from './floating'
 import { getRenderContainer } from '@/utils/getRenderContainer'
 import { useLocale } from '@/locales'
 import { deleteSelection } from '@tiptap/pm/commands'
@@ -56,11 +58,16 @@ function changeImagePercent(event?: any) {
     .updateImage({ width: `${percent}%` })
     .run()
 }
-const shouldShow = ({ editor }) => isActive(editor.view.state, 'image')
+const shouldShow: BubbleMenuShouldShow = ({ editor }) => editor.isEditable && isActive(editor.state, 'image')
 
-const getReferenceClientRect = computed(() => {
-  const renderContainer = getRenderContainer(props.editor, 'node-image')
-  return renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
+// Anchor the menu to the image node view instead of the selection
+const getReferencedVirtualElement = createVirtualElementGetter(() => getRenderContainer(props.editor, 'node-image'))
+
+const options = createBubbleMenuOptions(props.editor, {
+  placement: 'top',
+  offset: 8,
+  flip: true,
+  shift: { padding: 8 },
 })
 
 function setImageAlign(align: ImageAlignments) {
@@ -130,17 +137,12 @@ function handleRemove() {
 <template>
   <BubbleMenu
     :editor="editor"
-    pluginKey="image-menus-123"
-    :shouldShow="shouldShow"
-    :updateDelay="0"
-    :tippy-options="{
-      offset: [0, 8],
-      zIndex: 10,
-      appendTo: 'parent',
-      getReferenceClientRect: getReferenceClientRect.value,
-      plugins: [sticky],
-      sticky: 'popper',
-    }"
+    plugin-key="echoImageMenu"
+    :should-show="shouldShow"
+    :update-delay="0"
+    :options="options"
+    :get-referenced-virtual-element="getReferencedVirtualElement"
+    class="z-10"
   >
     <div
       class="border px-3 py-2 transition-all select-none pointer-events-auto shadow-xs rounded-xs w-auto bg-background"
@@ -150,7 +152,7 @@ function handleRemove() {
         <ActionButton :tooltip="t('editor.image.menu.flipY')" icon="FlipHorizontal" :action="handleFlipY" />
         <Separator orientation="vertical" class="mx-1 me-2 h-[16px]" />
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger as-child>
             <ActionButton :title="t('editor.image.menu.size')" icon="ImageSize" />
           </PopoverTrigger>
           <PopoverContent class="w-84">

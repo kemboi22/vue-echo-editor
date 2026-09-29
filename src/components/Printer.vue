@@ -44,13 +44,12 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
 
-const { state } = useTiptapStore()
+const { state } = useTiptapStore(props.editor)
 const srcdoc = ref('')
 const iframeRef = ref<HTMLIFrameElement | null>(null)
 
 // 生成打印内容的 HTML
 function generatePrintHTML(content: string): string {
-  console.log(getStylesHtml())
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -60,7 +59,7 @@ function generatePrintHTML(content: string): string {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>${getStylesHtml()}</style>
     </head>
-    <body class="echo-editor">
+    <body class="echo-editor echo-editor-ui">
       <div class="tiptap EchoContentView" translate="no" aria-expanded="false">
           ${content}
       </div>

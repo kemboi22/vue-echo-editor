@@ -70,7 +70,7 @@ const triggerHtml5Color = () => {
 </script>
 <template>
   <Popover>
-    <PopoverTrigger :disabled="disabled">
+    <PopoverTrigger :disabled="disabled" as-child>
       <slot />
     </PopoverTrigger>
     <PopoverContent hideWhenDetached class="p-2 w-full h-full" align="start" side="bottom">

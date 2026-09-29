@@ -17,6 +17,8 @@ interface Props {
   action?: ButtonViewReturnComponentProps['action']
   isActive?: ButtonViewReturnComponentProps['isActive']
 }
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(defineProps<Props>(), {
   icon: undefined,
   title: undefined,
@@ -34,7 +36,14 @@ const props = withDefaults(defineProps<Props>(), {
   <TooltipProvider>
     <Tooltip :delay-duration="0">
       <TooltipTrigger as-child>
-        <Button :class="cn('h-[32px] px-1.5 py-0', props.class)" variant="ghost" :disabled="disabled">
+        <Button
+          v-bind="$attrs"
+          :class="cn('h-[32px] px-1.5 py-0', props.class)"
+          variant="ghost"
+          :disabled="disabled"
+          :aria-label="tooltip || title"
+          aria-haspopup="menu"
+        >
           <div class="flex items-center h-full justify-between font-normal w-full">
             <div class="text-left truncate text-sm grow" v-if="title">{{ title }}</div>
             <Icon class="w-[16px] h-[16px]" :name="icon" v-if="icon" />

@@ -4,22 +4,15 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Icon } from '@/components/icons'
 import { useTiptapStore } from '@/hooks'
 import { useLocale } from '@/locales'
-import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { ref, shallowRef, watch, nextTick, onBeforeUnmount } from 'vue'
+import { toast } from 'vue-sonner'
 import type { Editor } from '@tiptap/core'
-import { createEditor, type PrismEditor } from 'prism-code-editor'
-import { defaultCommands, editHistory } from 'prism-code-editor/commands'
-import { cursorPosition } from 'prism-code-editor/cursor'
-import { indentGuides } from 'prism-code-editor/guides'
-import { highlightBracketPairs } from 'prism-code-editor/highlight-brackets'
-import { matchBrackets } from 'prism-code-editor/match-brackets'
-import { matchTags } from 'prism-code-editor/match-tags'
-import { searchWidget } from 'prism-code-editor/search'
+import { createCodeEditor, type PrismEditor } from '@/utils/prism'
 import 'prism-code-editor/search.css'
 import 'prism-code-editor/guides.css'
 import 'prism-code-editor/code-folding.css'
 import 'prism-code-editor/layout.css'
 import '@/extensions/CodeBlock/components/theme.css'
-import 'prism-code-editor/languages/html'
 
 import { useTheme } from '@/hooks/useTheme'
 
@@ -34,16 +27,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { isDark } = useTheme()
 
-const containerRef = ref(null)
+const containerRef = ref<HTMLElement | null>(null)
 const { t } = useLocale()
-const store = useTiptapStore()
+const store = useTiptapStore(props.editor)
 const htmlCode = ref('')
-let codeEditor = ref<PrismEditor | null>(null)
-
-// 获取当前编辑器的 HTML 内容
-const currentHtmlContent = computed(() => {
-  return props.editor.getHTML()
-})
+const codeEditor = shallowRef<PrismEditor | null>(null)
 
 // 关闭对话框
 function handleClose() {
@@ -54,10 +42,10 @@ function handleClose() {
 function saveEdit() {
   try {
     // https://github.com/ueberdosis/tiptap/discussions/5675
-    props.editor.commands.setContent(htmlCode.value, true)
+    props.editor.commands.setContent(htmlCode.value, { emitUpdate: true })
     store.state.sourceCode = false
   } catch (error) {
-    console.error('保存 HTML 代码时出错:', error)
+    console.error('Failed to apply HTML source:', error)
   }
 }
 
@@ -68,57 +56,52 @@ function copyCode() {
     navigator.clipboard
       .writeText(codeToCopy)
       .then(() => {
-        console.log('HTML 代码已复制到剪贴板')
+        toast.success(t.value('editor.copied'))
       })
       .catch(err => {
-        console.error('复制失败:', err)
+        console.error('Failed to copy HTML:', err)
       })
   }
 }
 
-// 监听对话框状态，重置状态
+function destroyCodeEditor() {
+  codeEditor.value?.remove()
+  codeEditor.value = null
+}
+
 watch(
   () => store.state.sourceCode,
-  isOpen => {
+  async isOpen => {
     if (!isOpen) {
-      // 对话框关闭时的清理工作
-    } else {
-      // 对话框打开时，初始化编辑内容
-      nextTick(() => {
-        init()
-        codeEditor.value?.textarea.focus()
-      })
+      destroyCodeEditor()
+      return
     }
-  }
+    await nextTick()
+    await init()
+    codeEditor.value?.textarea.focus()
+  },
+  { immediate: true }
 )
 
-function init() {
-  htmlCode.value = currentHtmlContent.value
-  codeEditor.value = createEditor(containerRef.value, {
+async function init() {
+  // Read the HTML only when the dialog opens, never on every transaction
+  htmlCode.value = props.editor.getHTML()
+  if (!containerRef.value) return
+  destroyCodeEditor()
+  codeEditor.value = await createCodeEditor(containerRef.value, {
     language: 'html',
     tabSize: 2,
     lineNumbers: true,
     wordWrap: true,
+    search: true,
     value: htmlCode.value,
     onUpdate(value) {
       htmlCode.value = value
     },
   })
-  codeEditor.value.addExtensions(
-    matchBrackets(),
-    matchTags(),
-    indentGuides(),
-    highlightBracketPairs(),
-    cursorPosition(),
-    defaultCommands(),
-    editHistory(),
-    searchWidget()
-  )
 }
 
-onBeforeUnmount(() => {
-  codeEditor.value?.remove()
-})
+onBeforeUnmount(destroyCodeEditor)
 </script>
 
 <template>
