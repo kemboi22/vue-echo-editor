@@ -10,6 +10,11 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  // Served under a sub-path when deployed next to the examples (see /Dockerfile)
+  app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || "/",
+  },
+
   i18n: {
     defaultLocale: "en",
     locales: [{ code: "en", name: "English", language: "en-US" }],
