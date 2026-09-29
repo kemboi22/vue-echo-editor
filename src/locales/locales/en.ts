@@ -228,6 +228,20 @@ const locale: Record<string, string> = {
   'editor.sourceCode.title': 'Source Code',
   'editor.sourceCode.format': 'Format',
   'editor.iframe.tooltip': 'Embed Service',
+  'editor.copied': 'Copied to clipboard',
+  'editor.toolbar.label': 'Editor toolbar',
+  'editor.bubbleMenu.label': 'Formatting',
+  'editor.characterLimitReached': 'Character limit reached',
+  'editor.AI.generate': 'Generate',
+  'editor.export.tooltip': 'Export',
+  'editor.export.pdf': 'PDF (print)',
+  'editor.export.markdown': 'Markdown (.md)',
+  'editor.export.html': 'HTML (.html)',
+  'editor.export.text': 'Plain text (.txt)',
+  'editor.export.rtf': 'Rich Text (.rtf)',
+  'editor.export.json': 'JSON (.json)',
+  'editor.collaboration.users': 'Connected users',
+  'editor.collaboration.you': 'You',
 }
 
 export default locale

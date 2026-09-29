@@ -229,6 +229,22 @@ const locale: Record<string, string> = {
   'editor.sourceCode.title': '源代码',
   'editor.sourceCode.format': '格式化',
   'editor.iframe.tooltip': '嵌入服务',
+  'editor.indent.indent': '增加缩进',
+  'editor.indent.outdent': '减少缩进',
+  'editor.copied': '已复制到剪贴板',
+  'editor.toolbar.label': '编辑器工具栏',
+  'editor.bubbleMenu.label': '格式',
+  'editor.characterLimitReached': '已达到字数上限',
+  'editor.AI.generate': '生成',
+  'editor.export.tooltip': '导出',
+  'editor.export.pdf': 'PDF（打印）',
+  'editor.export.markdown': 'Markdown (.md)',
+  'editor.export.html': 'HTML (.html)',
+  'editor.export.text': '纯文本 (.txt)',
+  'editor.export.rtf': '富文本 (.rtf)',
+  'editor.export.json': 'JSON (.json)',
+  'editor.collaboration.users': '在线用户',
+  'editor.collaboration.you': '你',
 }
 
 export default locale

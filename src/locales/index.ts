@@ -1,121 +1,156 @@
-import { computed, ref, unref, watchEffect } from 'vue'
+import { computed, effectScope, readonly, ref, shallowReactive, watch } from 'vue'
 
 import zhHans from './locales/zh'
 import en from './locales/en'
 
 import { DEFAULT_LANG_VALUE } from '@/constants'
-import mitt from '@/utils/mitt'
-import type { EventType } from '@/utils/mitt'
 
-interface LocaleInterface {
-  lang: string
-  message: Record<string, Record<string, string>>
+export type LocaleMessages = Record<string, string>
+
+export type BuiltInLocaleCode = 'en' | 'zhHans' | 'es' | 'fr' | 'de' | 'pt' | 'ru' | 'ja' | 'ko' | 'ar' | 'hi'
+
+export interface LocaleConfig {
+  code: string
+  name: string
+  nativeName: string
+  direction: 'ltr' | 'rtl'
 }
 
-interface MittEvents extends Record<EventType, unknown> {
-  lang: string
+export const supportedLocales: LocaleConfig[] = [
+  { code: 'en', name: 'English', nativeName: 'English', direction: 'ltr' },
+  { code: 'zhHans', name: 'Chinese (Simplified)', nativeName: '简体中文', direction: 'ltr' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', direction: 'ltr' },
+  { code: 'fr', name: 'French', nativeName: 'Français', direction: 'ltr' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch', direction: 'ltr' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português', direction: 'ltr' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский', direction: 'ltr' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語', direction: 'ltr' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', direction: 'ltr' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', direction: 'rtl' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', direction: 'ltr' },
+]
+
+// Additional languages are split into their own chunks and fetched on demand
+const lazyLocales: Record<string, () => Promise<{ default: LocaleMessages }>> = {
+  es: () => import('./locales/es'),
+  fr: () => import('./locales/fr'),
+  de: () => import('./locales/de'),
+  pt: () => import('./locales/pt'),
+  ru: () => import('./locales/ru'),
+  ja: () => import('./locales/ja'),
+  ko: () => import('./locales/ko'),
+  ar: () => import('./locales/ar'),
+  hi: () => import('./locales/hi'),
 }
 
-export const DEFAULT_LOCALE: LocaleInterface = {
-  lang: DEFAULT_LANG_VALUE,
-  message: {
-    zhHans,
-    en,
-  },
+const FALLBACK_LANG = 'en'
+
+const messages = shallowReactive<Record<string, LocaleMessages>>({ en, zhHans })
+// Tracked separately: plugins may register keys for a language before its built-in messages are loaded
+const loadedLanguages = new Set<string>(['en', 'zhHans'])
+const currentLang = ref<string>(DEFAULT_LANG_VALUE)
+const rtlLanguages = new Set(supportedLocales.filter(l => l.direction === 'rtl').map(l => l.code))
+
+function createTranslator(lang: string) {
+  const primary = messages[lang] ?? {}
+  const fallback = messages[FALLBACK_LANG] ?? {}
+  return function t(path: string, params?: Record<string, string | number>): string {
+    let value = primary[path] ?? fallback[path] ?? path
+    if (params) {
+      for (const [key, replacement] of Object.entries(params)) {
+        value = value.replaceAll(`{${key}}`, String(replacement))
+      }
+    }
+    return value
+  }
 }
+
+// One translator shared by every component — no per-component listeners
+const translator = computed(() => createTranslator(currentLang.value))
+const direction = computed<'ltr' | 'rtl'>(() => (rtlLanguages.has(currentLang.value) ? 'rtl' : 'ltr'))
 
 class Locale {
-  private emitter
-  constructor() {
-    this.emitter = mitt<MittEvents>()
-  }
-
   get lang(): string {
-    return DEFAULT_LOCALE.lang
+    return currentLang.value
   }
 
   set lang(lang: string) {
+    this.setLang(lang)
+  }
+
+  get message(): Record<string, LocaleMessages> {
+    return messages
+  }
+
+  get direction(): 'ltr' | 'rtl' {
+    return direction.value
+  }
+
+  isLangSupported(lang: string): boolean {
+    return lang in messages || lang in lazyLocales
+  }
+
+  /**
+   * Loads (if needed) and activates a language. Built-in languages other than `en` and `zhHans`
+   * are fetched on demand.
+   */
+  async setLang(lang: string): Promise<void> {
     if (!this.isLangSupported(lang)) {
-      console.warn(`Can't find the current language "${lang}", Using language "${DEFAULT_LOCALE.lang}" by default`)
+      console.warn(`[echo-editor] Unknown language "${lang}", keeping "${currentLang.value}".`)
       return
     }
-
-    DEFAULT_LOCALE.lang = lang
-    this.emitter.emit('lang', lang)
+    await this.loadLang(lang)
+    currentLang.value = lang
   }
 
-  get message(): Record<string, Record<string, string>> {
-    return DEFAULT_LOCALE.message
+  async loadLang(lang: string): Promise<LocaleMessages | undefined> {
+    const loader = lazyLocales[lang]
+    if (loadedLanguages.has(lang) || !loader) return messages[lang]
+    const loaded: LocaleMessages = (await loader()).default
+    // Keys registered before loading (e.g. by plugins) win over the built-in translations
+    messages[lang] = Object.assign({}, loaded, messages[lang])
+    loadedLanguages.add(lang)
+    return messages[lang]
   }
 
-  set message(message: Record<string, Record<string, string>>) {
-    DEFAULT_LOCALE.message = message
+  loadLangMessage(lang: string): LocaleMessages {
+    return messages[lang]
   }
 
-  loadLangMessage(lang: string): Record<string, string> {
-    return this.message[lang]
+  /** Replace or add a language. Missing keys fall back to English. */
+  setMessage(lang: string, message: LocaleMessages) {
+    messages[lang] = message
+    loadedLanguages.add(lang)
   }
 
-  private isLangSupported(lang: string): boolean {
-    const supportedLangs = Object.keys(this.message)
-    return supportedLangs.includes(lang)
+  /** Merge keys into a language (e.g. plugin translations). */
+  extendMessage(lang: string, message: LocaleMessages) {
+    messages[lang] = { ...(messages[lang] ?? {}), ...message }
   }
 
-  public setLang(lang: string) {
-    this.lang = lang
-  }
-
-  public registerWatchLang(hook: (lang: string) => void) {
-    this.emitter.on('lang', hook)
-
-    const unsubscribe = () => {
-      this.emitter.off('lang', hook)
-    }
-
-    return {
-      unsubscribe,
-    }
-  }
-
-  public setMessage(lang: string, message: Record<string, string>) {
-    this.message[lang] = message
+  /** Subscribe to language changes. Prefer `useLocale().lang` inside components. */
+  registerWatchLang(hook: (lang: string) => void) {
+    const scope = effectScope(true)
+    scope.run(() => watch(currentLang, hook))
+    return { unsubscribe: () => scope.stop() }
   }
 
   buildLocalesHandler(lang?: string) {
-    if (!lang) lang = this.lang
-
-    const message = this.loadLangMessage(lang)
-
-    return function t(path: string): string {
-      return message[path] || path
-    }
+    return createTranslator(lang ?? currentLang.value)
   }
 }
 
 const locale = new Locale()
 
-const useLocale = () => {
-  const lang = ref(DEFAULT_LOCALE.lang)
-
-  const t = computed(() => {
-    return locale.buildLocalesHandler(unref(lang))
-  })
-
-  watchEffect(effect => {
-    const watchLang = locale.registerWatchLang(val => {
-      lang.value = val
-    })
-
-    effect(() => {
-      watchLang.unsubscribe()
-    })
-  })
-
-  return {
-    lang,
-    t,
-  }
-}
+/**
+ * Reactive access to the active language and translator. Cheap to call anywhere:
+ * all callers share the same state.
+ */
+const useLocale = () => ({
+  lang: readonly(currentLang),
+  t: translator,
+  direction,
+})
 
 export default locale
 export { Locale, useLocale, zhHans, en }
