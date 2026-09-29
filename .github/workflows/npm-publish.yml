@@ -37,10 +37,14 @@ jobs:
       - name: Build library
         run: pnpm build:lib
 
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      # Authenticates via the trusted publisher configured on npmjs.com.
+      # Don't set NODE_AUTH_TOKEN here: a token takes precedence over OIDC.
       - name: Publish to npm
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
