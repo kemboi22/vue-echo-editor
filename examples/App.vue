@@ -1,364 +1,130 @@
+<script setup lang="ts">
+import { computed, defineAsyncComponent, ref } from 'vue'
+import { useDark, useStorage } from '@vueuse/core'
+import { ThemeToggle, locale, supportedLocales, useLocale } from 'vue-echo-editor'
+
+import './style.css'
+import 'vue-echo-editor/style.css'
+
+const demos = {
+  full: { label: 'Full featured', component: defineAsyncComponent(() => import('./demos/FullDemo.vue')) },
+  minimal: { label: 'Minimal', component: defineAsyncComponent(() => import('./demos/MinimalDemo.vue')) },
+  markdown: { label: 'Markdown', component: defineAsyncComponent(() => import('./demos/MarkdownDemo.vue')) },
+  collaboration: {
+    label: 'Collaboration',
+    component: defineAsyncComponent(() => import('./demos/CollaborationDemo.vue')),
+  },
+  plugins: { label: 'Plugins', component: defineAsyncComponent(() => import('./demos/PluginDemo.vue')) },
+} as const
+
+type DemoKey = keyof typeof demos
+
+const active = useStorage<DemoKey>('echo-demo-tab', 'full')
+const isDark = useDark()
+const { lang } = useLocale()
+const switching = ref(false)
+
+const current = computed(() => demos[active.value] ?? demos.full)
+
+async function changeLanguage(event: Event) {
+  switching.value = true
+  await locale.setLang((event.target as HTMLSelectElement).value)
+  switching.value = false
+}
+</script>
+
 <template>
-  <div class="min-h-screen bg-background">
-    <header
-      class="border-grid w-full border-b bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60"
-    >
-      <div class="container flex h-14 items-center sticky">
-        <div class="mr-4 md:mr-1 hidden md:flex">
-          <a href="/" class="mr-4 md:mr-2 lg:mr-6 flex items-center lg:space-x1 xl:space-x-2">
-            <svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              class="mr-2"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 7v10" />
-              <path d="M8 9v6" opacity="0.7" />
-              <path d="M4 11v2" opacity="0.4" />
-              <path d="M16 9v6" opacity="0.7" />
-              <path d="M20 11v2" opacity="0.4" />
-              <rect x="10" y="5" width="4" height="14" fill="currentColor" opacity="0.1" />
+  <div class="min-h-screen bg-background text-foreground">
+    <header class="sticky top-0 z-40 w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
+        <a href="https://github.com/kemboi22/vue-echo-editor" class="flex items-center gap-2 whitespace-nowrap font-semibold" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M12 7v10" />
+            <path d="M8 9v6" opacity="0.7" />
+            <path d="M4 11v2" opacity="0.4" />
+            <path d="M16 9v6" opacity="0.7" />
+            <path d="M20 11v2" opacity="0.4" />
+          </svg>
+          Echo Editor
+          <span class="hidden whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline">v1 · Tiptap 3</span>
+        </a>
+        <div class="ml-auto flex items-center gap-2">
+          <label class="sr-only" for="lang">Language</label>
+          <select
+            id="lang"
+            :value="lang"
+            :disabled="switching"
+            class="h-8 rounded-md border bg-background px-2 text-sm"
+            @change="changeLanguage"
+          >
+            <option v-for="item in supportedLocales" :key="item.code" :value="item.code">{{ item.nativeName }}</option>
+          </select>
+          <a
+            href="https://github.com/kemboi22/vue-echo-editor"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex size-8 items-center justify-center rounded-md hover:bg-accent"
+            aria-label="GitHub repository"
+          >
+            <svg viewBox="0 0 15 15" class="size-4" aria-hidden="true">
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M7.5.25a7.25 7.25 0 0 0-2.292 14.13c.363.066.495-.158.495-.35c0-.172-.006-.628-.01-1.233c-2.016.438-2.442-.972-2.442-.972c-.33-.838-.805-1.06-.805-1.06c-.658-.45.05-.441.05-.441c.728.051 1.11.747 1.11.747c.647 1.108 1.697.788 2.11.602c.066-.468.254-.788.46-.969c-1.61-.183-3.302-.805-3.302-3.583a2.8 2.8 0 0 1 .747-1.945c-.075-.184-.324-.92.07-1.92c0 0 .61-.194 1.994.744A7 7 0 0 1 7.5 3.756A7 7 0 0 1 9.315 4c1.384-.938 1.992-.743 1.992-.743c.396.998.147 1.735.072 1.919c.465.507.745 1.153.745 1.945c0 2.785-1.695 3.398-3.31 3.577c.26.224.492.667.492 1.343c0 .97-.009 1.751-.009 1.989c0 .194.131.42.499.349A7.25 7.25 0 0 0 7.499.25"
+              />
             </svg>
-            <span class="font-bold"> Echo Editor </span>
           </a>
-          <nav class="flex items-center gap-4 text-sm xl:gap-6"></nav>
-        </div>
-        <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div class="w-full flex-1 md:w-auto md:flex-none"></div>
-          <nav class="flex items-center gap-0.5">
-            <a
-              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground w-8 h-8"
-              href="https://github.com/Seedsa/echo-editor"
-              target="_blank"
-              ><svg viewBox="0 0 15 15" width="1.2em" height="1.2em" class="w-4 h-4">
-                <path
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  d="M7.5.25a7.25 7.25 0 0 0-2.292 14.13c.363.066.495-.158.495-.35c0-.172-.006-.628-.01-1.233c-2.016.438-2.442-.972-2.442-.972c-.33-.838-.805-1.06-.805-1.06c-.658-.45.05-.441.05-.441c.728.051 1.11.747 1.11.747c.647 1.108 1.697.788 2.11.602c.066-.468.254-.788.46-.969c-1.61-.183-3.302-.805-3.302-3.583a2.8 2.8 0 0 1 .747-1.945c-.075-.184-.324-.92.07-1.92c0 0 .61-.194 1.994.744A7 7 0 0 1 7.5 3.756A7 7 0 0 1 9.315 4c1.384-.938 1.992-.743 1.992-.743c.396.998.147 1.735.072 1.919c.465.507.745 1.153.745 1.945c0 2.785-1.695 3.398-3.31 3.577c.26.224.492.667.492 1.343c0 .97-.009 1.751-.009 1.989c0 .194.131.42.499.349A7.25 7.25 0 0 0 7.499.25"
-                  clip-rule="evenodd"
-                ></path></svg></a
-            ><ThemeToggle />
-          </nav>
+          <ThemeToggle />
         </div>
       </div>
     </header>
 
-    <div class="my-0 mx-auto max-w-[1024px] p-6">
-      <div class="mb-2">
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="locale.setLang('zhHans')"
-        >
-          中文
-        </button>
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="locale.setLang('en')"
-        >
-          English
-        </button>
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="toggleMinimal"
-        >
-          {{ minimal ? 'Full' : 'Minimal' }}
-        </button>
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="hideToolbar = !hideToolbar"
-        >
-          {{ !hideToolbar ? 'Hide Toolbar' : 'Show Toolbar' }}
-        </button>
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="hideMenubar = !hideMenubar"
-        >
-          {{ !hideMenubar ? 'Hide Menubar' : 'Show Menubar' }}
-        </button>
-        <button
-          class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          @click="disabled = !disabled"
-        >
-          {{ disabled ? 'Editable' : 'Readonly' }}
-        </button>
+    <main class="mx-auto max-w-6xl space-y-6 px-4 py-8">
+      <div class="space-y-2">
+        <h1 class="text-3xl font-bold tracking-tight">A fast, AI-ready rich-text editor for Vue</h1>
+        <p class="max-w-2xl text-muted-foreground">
+          Built on Tiptap 3 and shadcn-vue. Pick a demo below — every demo is lazily loaded, just like the editor's own feature
+          UIs.
+        </p>
       </div>
-      <div class="rounded-lg border bg-card text-card-foreground shadow-xs">
-        <echo-editor
-          v-model="content"
-          :extensions="extensions"
-          :hideToolbar="hideToolbar"
-          :hideMenubar="hideMenubar || minimal"
-          :key="minimal ? 'minimal' : 'full'"
-          :disabled="disabled"
-          :maxHeight="512"
-          output="html"
-          :dark="theme === 'dark'"
+
+      <nav class="flex flex-wrap gap-1 rounded-lg border bg-muted/40 p-1" role="tablist" aria-label="Demos">
+        <button
+          v-for="(demo, key) in demos"
+          :key="key"
+          role="tab"
+          :aria-selected="active === key"
+          class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+          :class="active === key ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'"
+          @click="active = key"
         >
-        </echo-editor>
-      </div>
-      <div class="mt-6 rounded-lg border bg-muted p-4">
-        <h3 class="mb-2 text-sm font-medium">HTML Output</h3>
-        <div class="rounded-sm bg-muted-foreground/5 max-h-[500px] overflow-auto">
-          <span>{{ content }}</span>
-        </div>
-      </div>
-    </div>
+          {{ demo.label }}
+        </button>
+      </nav>
+
+      <KeepAlive>
+        <component :is="current.component" :key="active" :dark="isDark" role="tabpanel" />
+      </KeepAlive>
+    </main>
   </div>
 </template>
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import {
-  Bold,
-  BulletList,
-  Italic,
-  BaseKit,
-  Underline,
-  Strike,
-  LineHeight,
-  Image,
-  History,
-  Heading,
-  CodeBlock,
-  FontSize,
-  Highlight,
-  Table,
-  Clear,
-  Blockquote,
-  Link,
-  Color,
-  Video,
-  OrderedList,
-  HorizontalRule,
-  Fullscreen,
-  TaskList,
-  MoreMark,
-  FormatPainter,
-  SlashCommand,
-  Indent,
-  locale,
-  ImportWord,
-  Columns,
-  TextAlign,
-  ImageUpload,
-  VideoUpload,
-  FontFamily,
-  FindAndReplace,
-  Code,
-  AI,
-  Preview,
-  Printer,
-  Iframe,
-  EchoEditor,
-  ThemeToggle,
-  SpecialCharacter,
-  SourceCode,
-} from 'echo-editor'
-import { ExportWord } from './extensions/ExportWord'
-import OpenAI from 'openai'
-import { DEMO_CONTENT } from './initContent'
 
-import './style.css'
-import 'echo-editor/style.css'
-
-const content = ref(DEMO_CONTENT)
-const theme = ref<string | null>(null)
-const hideToolbar = ref<boolean>(false)
-const hideMenubar = ref<boolean>(true)
-const disabled = ref<boolean>(false)
-const minimal = ref(false)
-
-const extensions = computed(() => (minimal.value ? minimalExtensions : fullExtensions))
-
-const minimalExtensions = [
-  BaseKit.configure({
-    characterCount: {
-      limit: 50000,
-    },
-  }),
-  Heading,
-  Bold.configure({ spacer: true }),
-  Italic,
-  Underline,
-  HorizontalRule,
-  TextAlign.configure({ types: ['heading', 'paragraph', 'image'], spacer: true }),
-  Image,
-  Blockquote.configure({ spacer: true }),
-  Code,
-  Link,
-  Color,
-  TaskList.configure({ spacer: true }),
-  OrderedList,
-  BulletList,
-]
-const fullExtensions = [
-  BaseKit.configure({
-    placeholder: {
-      showOnlyCurrent: true,
-    },
-    characterCount: {
-      limit: 50000,
-    },
-  }),
-  History,
-  Columns,
-  FormatPainter,
-  Clear,
-  Heading.configure({ spacer: true }),
-  FontSize,
-  FontFamily,
-  Bold,
-  Italic,
-  Underline,
-  Strike,
-  MoreMark,
-  Color.configure({ spacer: true }),
-  Highlight,
-  BulletList,
-  OrderedList,
-  TextAlign.configure({ types: ['heading', 'paragraph', 'image'], spacer: true }),
-  Indent,
-  LineHeight,
-  TaskList.configure({
-    spacer: true,
-    taskItem: {
-      nested: true,
-    },
-  }),
-  Link,
-  Image,
-  ImageUpload.configure({
-    upload: (files: File) => {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve(URL.createObjectURL(files))
-        }, 3000)
-      })
-    },
-  }),
-  Video,
-  VideoUpload.configure({
-    upload: handleFileUpload,
-  }),
-  Blockquote,
-  SlashCommand,
-  HorizontalRule,
-  CodeBlock,
-  Table.configure({ spacer: true }),
-  Code,
-  ExportWord,
-  AI.configure({
-    completions: AICompletions,
-    shortcuts: [
-      // 这里可以传入额外的自定义shortcuts
-      {
-        label: 'Custom Actions',
-        children: [
-          {
-            label: 'This is Custom Action',
-            prompt:
-              'Rewrite this content with no spelling mistakes, proper grammar, and with more descriptive language, using best writing practices without losing the original meaning.',
-          },
-        ],
-      },
-    ],
-  }),
-  ImportWord.configure({
-    upload: handleFileUpload,
-  }),
-  SpecialCharacter,
-  Fullscreen.configure({ spacer: true }),
-  SourceCode,
-  Preview,
-  FindAndReplace.configure({ spacer: true }),
-  Printer,
-  Iframe,
-]
-async function handleFileUpload(files: File[]) {
-  const f = files.map(file => ({
-    src: URL.createObjectURL(file),
-    alt: file.name,
-  }))
-  return Promise.resolve(f)
+<style>
+.demo-btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid var(--border);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  transition: background-color 150ms;
 }
-function toggleMinimal() {
-  minimal.value = !minimal.value
+.demo-btn:hover {
+  background: var(--accent);
 }
-
-/**
- * AI Completions handler function
- * WARNING: This is just a demo implementation. In production:
- * - DO NOT expose API keys in the frontend
- * - DO implement this through your backend API
- * - DO add proper error handling and rate limiting
- *
- * @param history - Chat history array containing messages with role and content
- * @param signal - AbortSignal for cancelling requests
- * @returns OpenAI chat completion stream
- */
-async function AICompletions(history: Array<{ role: string; content: string }> = [], signal?: AbortSignal) {
-  // groq.com For free llm api recommend deepseek r1 70b
-  // SECURITY WARNING: API keys should never be exposed in the frontend
-  // This is just for demo purposes
-  // In production, implement this through your backend API
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY
-  const baseURL = import.meta.env.VITE_OPENAI_BASE_URL
-  const model = import.meta.env.VITE_OPENAI_MODEL
-
-  if (!apiKey || !baseURL || !model) {
-    throw new Error('OpenAI configuration is missing. Please check your environment variables.')
-  }
-
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true,
-    baseURL: baseURL,
-  })
-
-  const systemMsg = `You are a professional writing assistant. Please respond based on the user's context:
-
-1. Maintain a professional, accurate, and objective tone
-2. Ensure responses are clear, coherent, and well-structured
-3. Responses must be in HTML format, preserving all HTML tags, links, and styles
-4. Support the following writing enhancements:
-   - Grammar and spelling corrections
-   - Improved sentence structure and expression
-   - Optimized article formatting and layout
-   - Maintain the core meaning of the original text
-5. If context includes code, maintain code formatting and provide optimization suggestions
-6. Add appropriate HTML elements like headings, lists, quotes etc. to enhance readability as needed
-
-Please respond only based on the provided context, do not add irrelevant information.`
-
-  const systemPrompt = [{ role: 'system', content: systemMsg }]
-  const finalMessages = [...systemPrompt]
-
-  if (history.length > 0) {
-    finalMessages.push(...history)
-  }
-
-  try {
-    const stream = await openai.chat.completions.create(
-      {
-        model,
-        messages: finalMessages,
-        temperature: 0.7,
-        stream: true,
-        reasoning_format: 'parsed', // groq deepseek r1 need this
-      } as any,
-      { signal }
-    )
-
-    return stream
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error in AI Completions:', error.message)
-    }
-    throw error
-  }
+.demo-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
-</script>
+</style>

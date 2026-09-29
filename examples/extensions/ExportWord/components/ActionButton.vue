@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { ActionButton } from 'echo-editor'
-import type { Editor } from 'echo-editor'
-import { ButtonViewReturnComponentProps } from 'echo-editor'
-import iconUrl from '../../../icons/exportWord.svg'
+import { ActionButton } from 'vue-echo-editor'
+import type { EditorInstance } from 'vue-echo-editor'
+import exportWordIcon from '../../../icons/exportWord.svg?url'
 
-const props = withDefaults(defineProps<Props>(), {
-  disabled: false,
-  isActive: undefined,
-})
-
-interface Props {
-  disabled?: boolean
-  isActive?: ButtonViewReturnComponentProps['isActive']
-  editor?: Editor
-}
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean
+    tooltip?: string
+    editor?: EditorInstance
+  }>(),
+  { disabled: false, tooltip: 'Export to Word', editor: undefined }
+)
 
 function handleExport() {
   props.editor?.commands.exportToWord()
@@ -21,9 +18,9 @@ function handleExport() {
 </script>
 
 <template>
-  <action-button tooltip="ExportToWord" :is-active="isActive" :disabled="disabled" :action="handleExport">
+  <ActionButton :tooltip="tooltip" :disabled="disabled" :action="handleExport">
     <template #icon>
-      <iconUrl style="width: 16px; height: 16px" />
+      <img :src="exportWordIcon" alt="" width="16" height="16" class="dark:invert" />
     </template>
-  </action-button>
+  </ActionButton>
 </template>

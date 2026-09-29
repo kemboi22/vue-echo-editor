@@ -1,18 +1,17 @@
 import { Extension } from '@tiptap/core'
 import { saveAs } from 'file-saver'
-import ActionButton from './components/ActionButton.vue'
 import { DocxSerializer, defaultNodes, defaultMarks } from 'prosemirror-docx'
 import { Packer } from 'docx'
-import type { GeneralOptions } from 'echo-editor'
+import { definePlugin } from 'vue-echo-editor'
+import ActionButton from './components/ActionButton.vue'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     exportWord: {
-      exportToWord: () => ReturnType
+      exportToWord: (filename?: string) => ReturnType
     }
   }
 }
-export interface ExportWordOptions extends GeneralOptions<ExportWordOptions> {}
 
 const nodeSerializer = {
   ...defaultNodes,
@@ -22,41 +21,48 @@ const nodeSerializer = {
   listItem: defaultNodes.list_item,
   bulletList: defaultNodes.bullet_list,
   horizontalRule: defaultNodes.horizontal_rule,
-  image(state, node) {
-    // No image
+  image(state: any, node: any) {
+    // Images are skipped in this simple example
     state.renderInline(node)
     state.closeBlock(node)
   },
 }
+
 const docxSerializer = new DocxSerializer(nodeSerializer, defaultMarks)
 
-export const ExportWord = Extension.create<ExportWordOptions>({
-  name: 'exportWord',
-  addOptions() {
-    return {
-      ...this.parent?.(),
-      button: ({}) => ({
-        component: ActionButton,
-        componentProps: {},
-      }),
-    }
-  },
+const ExportWordCommands = Extension.create({
+  name: 'exportWordCommands',
   addCommands() {
     return {
       exportToWord:
-        () =>
+        (filename = 'document.docx') =>
         ({ editor }) => {
-          const opts: any = {
-            getImageBuffer: async (src: string) => {
-              const response = await fetch(src)
-              const arrayBuffer = await response.arrayBuffer()
-              return new Uint8Array(arrayBuffer)
-            },
-          }
-          const wordDocument = docxSerializer.serialize(editor.state.doc, opts)
-          Packer.toBlob(wordDocument).then(blob => saveAs(new Blob([blob]), 'example.docx'))
+          const wordDocument = docxSerializer.serialize(editor.state.doc, {
+            getImageBuffer: async (src: string) => new Uint8Array(await (await fetch(src)).arrayBuffer()),
+          } as any)
+          Packer.toBlob(wordDocument).then(blob => saveAs(blob, filename))
           return true
         },
     }
   },
+})
+
+/**
+ * Example third-party plugin built with `definePlugin`: a command, a toolbar button and translations.
+ */
+export const ExportWord = definePlugin({
+  name: 'exportWord',
+  extensions: [ExportWordCommands],
+  locales: {
+    en: { 'exportWord.tooltip': 'Export to Word' },
+    zhHans: { 'exportWord.tooltip': '导出为 Word' },
+    fr: { 'exportWord.tooltip': 'Exporter vers Word' },
+    es: { 'exportWord.tooltip': 'Exportar a Word' },
+  },
+  toolbar: ({ t }) => ({
+    component: ActionButton,
+    componentProps: {
+      tooltip: t('exportWord.tooltip'),
+    },
+  }),
 })
