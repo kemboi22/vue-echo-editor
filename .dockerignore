@@ -1,0 +1,17 @@
+**/node_modules
+**/.nuxt
+**/.output
+**/.data
+.git
+.github
+.husky
+dist
+lib
+examples/dist
+data.ms
+dumps
+screenshot
+tests
+.env
+.env.*
+!.env.example
