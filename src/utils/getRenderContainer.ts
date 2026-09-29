@@ -1,6 +1,15 @@
-import { Editor } from '@tiptap/vue-3'
+import type { Editor } from '@tiptap/core'
 
-export const getRenderContainer = (editor: Editor, nodeType: string) => {
+const matchesNodeType = (element: Element | null | undefined, nodeType: string) =>
+  !!element && (element.getAttribute('data-type') === nodeType || element.classList.contains(nodeType))
+
+/**
+ * Finds the DOM element rendering the closest `nodeType` node around the current selection.
+ * The lookup is scoped to this editor, so multiple editors on a page never pick each other's nodes.
+ */
+export const getRenderContainer = (editor: Editor, nodeType: string): HTMLElement | null => {
+  if (editor.isDestroyed) return null
+
   const {
     view,
     state: {
@@ -8,34 +17,20 @@ export const getRenderContainer = (editor: Editor, nodeType: string) => {
     },
   } = editor
 
-  const elements = document.querySelectorAll('.focus')
-  const elementCount = elements.length
-  const innermostNode = elements[elementCount - 1]
-  const element = innermostNode
-
-  if (
-    (element && element.getAttribute('data-type') && element.getAttribute('data-type') === nodeType) ||
-    (element && element.classList && element.classList.contains(nodeType))
-  ) {
-    return element
+  const focused = view.dom.querySelectorAll('.focus')
+  const innermost = focused[focused.length - 1]
+  if (matchesNodeType(innermost, nodeType)) {
+    return innermost as HTMLElement
   }
 
   const node = view.domAtPos(from).node as HTMLElement
-  let container: any = node
+  let container: HTMLElement | null = node.tagName ? node : node.parentElement
 
-  if (!container.tagName) {
-    container = node.parentElement
-  }
-
-  while (
-    container &&
-    !(container.getAttribute('data-type') && container.getAttribute('data-type') === nodeType) &&
-    !container.classList.contains(nodeType)
-  ) {
+  while (container && container !== view.dom && !matchesNodeType(container, nodeType)) {
     container = container.parentElement
   }
 
-  return container
+  return container === view.dom ? null : container
 }
 
 export default getRenderContainer

@@ -1,5 +1,5 @@
 /** Default lang */
-export const DEFAULT_LANG_VALUE = 'zhHans' as const
+export const DEFAULT_LANG_VALUE = 'en' as const
 
 /** Throttle time for editor input (milliseconds) */
 export const EDITOR_UPDATE_THROTTLE_WAIT_TIME = 200 as const
@@ -833,6 +833,6 @@ export const DEFAULT_THEME: Theme = 'zinc'
 // Border Radius
 export type BorderRadius = 0 | 0.25 | 0.5 | 0.75 | 1
 
-export const BORDER_RADIUS = [0, 0.25, 0.5, 0.75, 1]
+export const BORDER_RADIUS: BorderRadius[] = [0, 0.25, 0.5, 0.75, 1]
 
-export const DEFAULT_BORDER_RADIUS = 0.5
+export const DEFAULT_BORDER_RADIUS: BorderRadius = 0.5

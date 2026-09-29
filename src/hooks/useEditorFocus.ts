@@ -1,6 +1,6 @@
 import { ref, onUnmounted } from 'vue'
 import { Editor } from '@tiptap/core'
-import debounce from 'lodash/debounce'
+import { debounce } from '@/utils/utils'
 
 export interface UseEditorFocusOptions {
   editor: Editor | null

@@ -2,6 +2,17 @@ import { ref } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
 import { toast } from 'vue-sonner'
 
+/**
+ * Extracts text from a streamed chunk. Supports plain strings (any backend), OpenAI-style
+ * `choices[0].delta.content` chunks and `{ text }` / `{ delta: { text } }` objects.
+ */
+function getChunkText(chunk: unknown): string {
+  if (typeof chunk === 'string') return chunk
+  if (!chunk || typeof chunk !== 'object') return ''
+  const value = chunk as Record<string, any>
+  return value.choices?.[0]?.delta?.content ?? value.delta?.text ?? value.text ?? ''
+}
+
 export function useAIConversation(editor: Editor) {
   const result = ref<string>('')
   const status = ref<'init' | 'generating' | 'completed'>('init')
@@ -33,11 +44,18 @@ export function useAIConversation(editor: Editor) {
       }
 
       let assistantResponse = ''
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || ''
-        result.value += content
-        assistantResponse += content
+      let frame = 0
+      // Render streamed tokens at most once per frame instead of once per chunk
+      const flush = () => {
+        frame = 0
+        result.value = assistantResponse
       }
+      for await (const chunk of stream) {
+        assistantResponse += getChunkText(chunk)
+        if (!frame) frame = requestAnimationFrame(flush)
+      }
+      if (frame) cancelAnimationFrame(frame)
+      flush()
 
       conversationHistory.value.push({
         role: 'assistant',

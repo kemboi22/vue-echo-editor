@@ -194,3 +194,84 @@
   font-weight: 700;
   line-height: 1.6;
 }
+
+/* Collaboration carets (Tiptap v3 `CollaborationCaret`) */
+.echo-editor .collaboration-carets__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  word-break: normal;
+  pointer-events: none;
+}
+
+.echo-editor .collaboration-carets__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px 3px 3px 0;
+  color: #fff;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Slash command popup (Floating UI), rendered in <body> */
+.echo-slash-command {
+  color: var(--foreground);
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .echo-editor *,
+  .echo-editor *::before,
+  .echo-editor *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch devices: larger hit targets, swipeable toolbar, no hover-only affordances */
+@media (pointer: coarse) {
+  .echo-editor .echo-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .echo-editor .echo-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .echo-editor .echo-toolbar > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .echo-editor .echo-action-button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .echo-editor .drag-handle {
+    display: none !important;
+  }
+
+  .echo-editor .ProseMirror {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* Fullscreen respects notches / home indicators */
+.echo-editor .fixed\! {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}

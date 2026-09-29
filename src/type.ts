@@ -1,4 +1,4 @@
-import type { Editor as CoreEditor, Extension, JSONContent, AnyExtension } from '@tiptap/core'
+import type { Editor as CoreEditor, Extension, JSONContent, AnyExtension, EditorOptions } from '@tiptap/core'
 import type { Editor } from '@tiptap/vue-3'
 import { icons } from '@/components/icons'
 import type { Theme, BorderRadius } from '@/constants'
@@ -123,9 +123,10 @@ export interface EchoEditorProps {
    * - html: outputs HTML string
    * - json: outputs JSON object
    * - text: outputs plain text
+   * - markdown: outputs Markdown (requires the `Markdown` extension)
    * @default 'html'
    */
-  output?: 'html' | 'json' | 'text'
+  output?: 'html' | 'json' | 'text' | 'markdown'
 
   /**
    * Dark mode
@@ -210,10 +211,39 @@ export interface EchoEditorProps {
    * Accepts string, array or object
    */
   contentClass?: string | string[] | Record<string, any>
+
+  /**
+   * Extra ProseMirror editor props, merged into the editor configuration.
+   * `attributes` are merged with the defaults; `handleKeyDown` runs after the built-in Enter handling.
+   */
+  editorProps?: EditorOptions['editorProps']
+
+  /**
+   * Focus the editor on mount
+   * @default false
+   */
+  autofocus?: EditorOptions['autofocus']
+
+  /**
+   * Accessible name of the editable area (`aria-label`)
+   * @default the localized "Please enter content" text
+   */
+  label?: string
+}
+
+/**
+ * Event payload for focus / blur events.
+ */
+export type EchoEditorFocusEvent = {
+  editor: CoreEditor
+  event: FocusEvent
 }
 
 export interface EchoEditorEmits {
   (event: 'enter'): void
   (event: 'change', value: EchoEditorOnChange): void
   (event: 'update:modelValue', value: string | JSONContent): void
+  (event: 'create', value: { editor: CoreEditor }): void
+  (event: 'focus', value: EchoEditorFocusEvent): void
+  (event: 'blur', value: EchoEditorFocusEvent): void
 }

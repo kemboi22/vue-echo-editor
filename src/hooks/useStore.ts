@@ -1,15 +1,15 @@
-import { computed, reactive, watchEffect } from 'vue'
+import { computed, effectScope, getCurrentInstance, inject, reactive, watchEffect } from 'vue'
+import type { ComputedRef, InjectionKey } from 'vue'
 
-import type { AnyExtension } from '@tiptap/core'
-import { createGlobalState } from '@vueuse/core'
+import type { AnyExtension, Editor } from '@tiptap/core'
 import { useContext } from './useContext'
 
 import { DEFAULT_LANG_VALUE } from '@/constants'
 
 /**
- * Interface representing an tiptap editor instance.
+ * UI state of a single editor instance.
  */
-interface Instance {
+export interface EditorUIState {
   /**
    * List of extensions
    *
@@ -60,11 +60,26 @@ interface Instance {
   disabled: boolean
 }
 
-export const useTiptapStore = createGlobalState(() => {
-  const { state: _state } = useContext()
+export interface EditorStore {
+  state: EditorUIState
+  isFullscreen: ComputedRef<boolean>
+  toggleFullscreen: () => void
+  togglePreview: () => void
+  toggleSpecialCharacter: () => void
+  toggleSpellCheck: () => void
+  toggleFindAndReplace: () => void
+  togglePrinter: () => void
+  toggleSourceCode: () => void
+  setDisabled: (disabled: boolean) => void
+}
 
-  const state: Instance = reactive({
-    extensions: _state.extensions ?? [],
+export const EDITOR_STORE_KEY: InjectionKey<EditorStore> = Symbol('echo-editor-store')
+
+function createStore(): EditorStore {
+  const { state: context } = useContext()
+
+  const state: EditorUIState = reactive({
+    extensions: context.extensions ?? [],
     defaultLang: DEFAULT_LANG_VALUE,
     isFullscreen: false,
     color: undefined,
@@ -79,49 +94,66 @@ export const useTiptapStore = createGlobalState(() => {
     disabled: false,
   })
 
-  const isFullscreen = computed(() => state.isFullscreen)
-
-  function toggleFullscreen() {
-    state.isFullscreen = !state.isFullscreen
-  }
-
-  function togglePreview() {
-    state.showPreview = !state.showPreview
-  }
-  function toggleSpecialCharacter() {
-    state.specialCharacter = !state.specialCharacter
-  }
-  function toggleSourceCode() {
-    state.sourceCode = !state.sourceCode
-  }
-  function toggleSpellCheck() {
-    state.spellCheck = !state.spellCheck
-  }
-  function toggleFindAndReplace() {
-    state.findAndReplace = !state.findAndReplace
-  }
-  function togglePrinter() {
-    state.printer = !state.printer
-  }
-  function setDisabled(disabled: boolean) {
-    state.disabled = disabled
-  }
-
   watchEffect(() => {
-    state.extensions = _state.extensions
-    state.defaultLang = _state.defaultLang
+    state.extensions = context.extensions
+    state.defaultLang = context.defaultLang
   })
 
   return {
     state,
-    isFullscreen,
-    toggleFullscreen,
-    togglePreview,
-    toggleSpecialCharacter,
-    toggleSpellCheck,
-    toggleFindAndReplace,
-    togglePrinter,
-    toggleSourceCode,
-    setDisabled,
+    isFullscreen: computed(() => state.isFullscreen),
+    toggleFullscreen: () => (state.isFullscreen = !state.isFullscreen),
+    togglePreview: () => (state.showPreview = !state.showPreview),
+    toggleSpecialCharacter: () => (state.specialCharacter = !state.specialCharacter),
+    toggleSourceCode: () => (state.sourceCode = !state.sourceCode),
+    toggleSpellCheck: () => (state.spellCheck = !state.spellCheck),
+    toggleFindAndReplace: () => (state.findAndReplace = !state.findAndReplace),
+    togglePrinter: () => (state.printer = !state.printer),
+    setDisabled: (disabled: boolean) => (state.disabled = disabled),
   }
-})
+}
+
+/** Stores are created in a detached scope so they outlive the component that created them. */
+function createDetachedStore(): EditorStore {
+  return effectScope(true).run(createStore)!
+}
+
+const stores = new WeakMap<Editor, EditorStore>()
+let fallbackStore: EditorStore | undefined
+
+/**
+ * Creates (or returns) the UI store bound to a given editor instance.
+ * Every `<EchoEditor>` gets its own store, so multiple editors on one page no longer share
+ * fullscreen, preview or AI-menu state.
+ */
+export function createEditorStore(editor: Editor): EditorStore {
+  let store = stores.get(editor)
+  if (!store) {
+    store = createDetachedStore()
+    stores.set(editor, store)
+  }
+  return store
+}
+
+/**
+ * Returns the UI store for an editor.
+ *
+ * Resolution order: explicit `editor` argument → injected store of the nearest `<EchoEditor>` →
+ * a shared fallback store (for usage outside of an editor, e.g. standalone components).
+ */
+export function useTiptapStore(editor?: Editor | null): EditorStore {
+  if (editor) {
+    const store = stores.get(editor)
+    if (store) return store
+  }
+
+  if (getCurrentInstance()) {
+    const injected = inject(EDITOR_STORE_KEY, null)
+    if (injected) return injected
+  }
+
+  if (editor) return createEditorStore(editor)
+
+  fallbackStore ??= createDetachedStore()
+  return fallbackStore
+}
