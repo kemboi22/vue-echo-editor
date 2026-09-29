@@ -1,36 +1,26 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2022",
     "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
-    "allowJs": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "jsx": "preserve",
+    "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": "./src",
-    "skipLibCheck": true,
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "types": [],
-    "paths": {
-      "@/*": ["./*"]
-    },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "resolveJsonModule": true,
     "isolatedModules": true,
-    "noImplicitAny": false
+    "verbatimModuleSyntax": false,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "useDefineForClassFields": true,
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["es2022", "dom", "dom.iterable"]
   },
-  "include": [
-    "types/**/*",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "**/*.ts",
-    "src/plugins/drag.ts"
-  ],
-  "exclude": ["node_modules", "dist", "src/examples"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts"],
+  "exclude": ["node_modules", "lib", "dist", "examples", "docs", "src/demo"]
 }
