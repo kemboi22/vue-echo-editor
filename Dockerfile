@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 
 # ---- build ----------------------------------------------------------------
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /repo
-RUN corepack enable
+# Node 25+ no longer ships corepack; keep in sync with `packageManager` in package.json
+RUN npm install -g pnpm@10.25.0
 
 ENV HUSKY=0 CI=true
 COPY . .
@@ -24,7 +25,7 @@ ENV NUXT_APP_BASE_URL=/docs/
 RUN pnpm --dir docs run build
 
 # ---- runtime --------------------------------------------------------------
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 RUN apk add --no-cache nginx
 WORKDIR /app
 

@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
@@ -37,18 +37,15 @@ jobs:
       - name: Build library
         run: pnpm build:lib
 
-      # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
-      - name: Update npm
-        run: npm install -g npm@latest
-
+      # Trusted publishing (OIDC) needs npm >= 11.5.1, which Node 26 bundles.
       # Authenticates via the trusted publisher configured on npmjs.com.
       # Don't set NODE_AUTH_TOKEN here: a token takes precedence over OIDC.
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --tag latest
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
           make_latest: true
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
