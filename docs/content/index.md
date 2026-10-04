@@ -13,6 +13,11 @@ announcement:
 actions:
   - name: Get started
     to: /getting-started/introduction
+  - name: View examples
+    variant: outline
+    to: /examples/
+    target: _blank
+    leftIcon: 'lucide:eye'
   - name: GitHub
     variant: outline
     to: https://github.com/kemboi22/vue-echo-editor

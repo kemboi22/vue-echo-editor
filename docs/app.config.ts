@@ -30,6 +30,7 @@ export default defineAppConfig({
         ] },
         { title: 'Extensions', to: '/extensions/overview' },
         { title: 'AI & MCP', to: '/ai/llms-txt' },
+        { title: 'Examples', to: '/examples/', target: '_blank' },
       ],
       links: [
         { icon: 'lucide:package', to: 'https://www.npmjs.com/package/vue-echo-editor', target: '_blank' },
